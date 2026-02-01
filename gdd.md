@@ -1,297 +1,353 @@
-🎮 Slipstrike – Game Design Document (GDD)
+# 🎮 Slipstrike – Game Design Document (GDD)
 
-Version 1.1 – Updated Core Design
-# 1. High Concept
+**Version:** 1.1.1
+**Status:** Engine-agnostisch · Modding-first · Deterministisch
 
-Slipstrike ist ein rundenbasiertes 2D‑Arena‑Taktikspiel, in dem Spieler Figuren über rutschige Untergründe stoßen, Gegner aus der Arena schubsen und taktische Items einsetzen.
-Jede Runde besteht aus Item → Stoß → Physik.
-Ziel ist es, den Gegner zu eliminieren, indem man ihn aus der Arena drängt oder in Gefahrenzonen befördert.
-# 2. Plattformen
+---
 
-Slipstrike wird plattformübergreifend entwickelt:
+## 1. High Concept
 
-    PC (Steam) – Maus & Controller
+**Slipstrike** ist ein rundenbasiertes 2D‑Arena‑Taktikspiel mit stark physikbasierter Bewegung.
+Spieler stoßen Figuren über rutschige Arenen, manipulieren den Zug mit taktischen Items und versuchen, Gegner durch geschickte Richtungswahl und Kraftdosierung aus der Arena zu drängen.
 
-    Steam Deck – Controller, 1280×800
+Das Spiel ist **nicht reaktionsbasiert**, sondern **entscheidungsbasiert**:
+Jeder Zug besteht aus Planung, Ausführung und Beobachtung eines deterministischen Physik‑Ergebnisses.
 
-    Android / iOS – Touch‑Steuerung
+Kernversprechen:
 
-    Discord – Maus/Tastatur, Rich Presence
+* Jeder Stoß ist eine bewusste Entscheidung
+* Physik ist vorhersagbar, nicht chaotisch
+* Taktik entsteht aus Geometrie, Timing und Regeln
 
-# 3. Kern‑Gameplay
+---
 
-Slipstrike basiert auf drei Grundmechaniken:
-1. Item‑Phase (optional)
+## 2. Design‑Ziele
 
-Der Spieler darf ein Item einsetzen.
-Items können auf jede Figur oder Position angewendet werden und sind nicht an die Figur gebunden, die später gestoßen wird.
-2. Stoß‑Phase (Pflicht)
+* **Deterministische Physik** (replay‑ & KI‑freundlich)
+* **Minimale Engine**, maximale Auslagerung in Daten
+* **100 % datengetriebene Items & Maps**
+* **Modding als First‑Class‑Feature** (intern & extern identisch)
+* Plattformübergreifend ohne Gameplay‑Unterschiede
 
-Der Spieler stößt eine eigene Figur in eine Richtung.
-Ein Stoß ist gleichzeitig Bewegung und Angriff.
-Die Figur rutscht abhängig von Reibung, Drift und Map‑Effekten.
-3. Physik‑Phase
+---
 
-Die Runde endet, sobald alle Figuren nahezu stillstehen.
-# 4. Steuerung
-PC – Maus
+## 3. Plattformen
 
-    Ziehen → Richtung
+Slipstrike wird aus einer gemeinsamen Codebasis betrieben:
 
-    Loslassen → Stoß
+* **PC (Steam)** – Maus & Controller
+* **Steam Deck** – Controller, 1280×800
+* **Android / iOS** – Touch‑Steuerung
+* **Discord** – Maus & Tastatur, Rich Presence
 
-    Klick → Item auswählen
+Alle Plattformen nutzen **dieselben Regeln, Items und Physikdaten**.
 
-PC/Steam Deck – Controller
+---
 
-    Stick → Richtung
+## 4. Kern‑Gameplay‑Loop
 
-    Trigger → Stoßstärke
+Jede Runde folgt strikt diesem Ablauf:
 
-    Buttons → Items
+1. **Item‑Phase (optional)**
+   Der aktive Spieler kann **genau ein Item** einsetzen.
 
-Mobile – Touch
+2. **Stoß‑Phase (Pflicht)**
+   Der Spieler wählt eine eigene Figur, richtet sie aus und stößt sie.
 
-    Finger ziehen → Richtung
+3. **Physik‑Phase**
+   Es gibt **keine Eingaben**. Die Physik läuft, bis alle Figuren nahezu stillstehen.
 
-    Halten → Stoßstärke
+4. **Rundenwechsel**
+   Der nächste Spieler ist am Zug.
 
-    Tippen → Items
+---
 
-Discord
+## 5. Physik & Bewegung (Rotation + Force)
 
-    Maus + Tastatur
+Slipstrike verwendet ein **gerichtetes Impulsmodell**.
 
-# 5. Items
+### Figuren‑Zustand
 
-Items sind taktische Werkzeuge, die die Runde vorbereiten oder manipulieren.
-Der Spieler kann ein Item pro Runde einsetzen, bevor er stößt.
-Item‑Liste (10 Stück):
+Jede Figur besitzt:
 
-    Anker – Reduziert Knockback
+* Position (2D)
+* Rotation (Richtung)
+* Velocity (Bewegungsvektor)
+* optionale Angular Velocity
 
-    Magnet – Zieht Gegner an
+### Stoß‑Mechanik
 
-    Köder – Bluff ohne Effekt
+* **Rotation bestimmt die Richtung**
+* **Force bestimmt die Stärke**
+* Ein Stoß ist ein einmaliger Impuls
 
-    Falltür – Unsichtbare Todesfalle
+Konzeptuell:
 
-    Power‑Dash – Verstärkt den nächsten Stoß
+* Rotation → Vorwärtsvektor
+* Force → Skalierung dieses Vektors
+* Velocity += Forward × Force
 
-    Verzögerte Mine – Explosion im Gegnerzug
+### Bewegung
 
-    Mini‑Wall – Temporäre Barriere
+* Position wird aus Velocity integriert
+* Reibung reduziert Velocity pro Tick
+* Figuren kommen deterministisch zum Stillstand
 
-    Freeze‑Shot – Verlangsamt Gegner
+### Drift
 
-    Switch – Tauscht Positionen
+* Drift ist **mapabhängig**
+* Velocity tendiert zur Rotationsrichtung
+* Eis‑Maps erlauben extreme Drift‑Abweichungen
 
-    Jägermeister Elixier – Blockt Knockback
+### Kollisionen
 
-# 6. Maps
+* Figur ↔ Figur
+* Figur ↔ Arena
+* Kollisionen ändern Richtung & Geschwindigkeit
 
-Jede Map hat eigene physikalische Eigenschaften und Gefahren.
-Cue Clash (Billard)
+### Tod
 
-    Normale Reibung
+* Verlässt eine Figur die Arena → sofort eliminiert
 
-    Billardkugeln als Hindernisse
+---
 
-Frostbite Arena (Eis)
+## 6. Items (Modding‑first)
 
-    Sehr niedrige Reibung
+Items sind **rein deklarativ** und werden **nicht im Code definiert**.
 
-    Extreme Drift‑Kontrolle
+### Grundregeln
 
-Magma Cradle (Lava)
+* Maximal **ein Item pro Runde**
+* Items werden **vor dem Stoß** eingesetzt
+* Items können auf:
 
-    Geysire
+  * Figuren
+  * Positionen
+  * Zonen
+    angewendet werden
 
-    Hitzezonen
+### Item‑Architektur
 
-    Lava‑Spritzer
+* Items sind JSON‑Daten
+* Die Engine kennt nur **Effekt‑Typen**, keine Items
+* Interne Items und Mods nutzen **dieselbe Pipeline**
 
-# 7. Physik & Bewegung
+### Effekt‑Beispiele
 
-Slipstrike nutzt Unitys 2D‑Physik:
+* Force‑Multiplikation
+* Richtungsänderung
+* Positions‑Tausch
+* Temporäre Barrieren
+* Verzögerte Effekte
 
-    Rigidbody2D für Figuren
+### Offizielle Item‑Liste
 
-    AddForce() für Stoß
+* Anker
+* Magnet
+* Köder
+* Falltür
+* Power‑Dash
+* Verzögerte Mine
+* Mini‑Wall
+* Freeze‑Shot
+* Switch
+* Jägermeister‑Elixier
 
-    PhysicsMaterial2D für Reibung
+---
 
-    Drift abhängig von Map
+## 7. Maps & Arenen
 
-    Kollisionen erzeugen Richtungswechsel
+Maps definieren **physikalisches Verhalten**, nicht nur Layout.
 
-    Figuren sterben beim Verlassen der Arena
+### Map‑Eigenschaften
 
-# 8. Rundenablauf
+* Reibung
+* Drift‑Faktor
+* Arena‑Form
+* Gefahrenzonen
 
-Eine Runde besteht aus:
+### Gefahrenzonen (Hazards)
 
-    Item‑Phase (optional)  
-    Spieler setzt ein Item ein.
+Hazards sind datengetriebene Trigger:
 
-    Stoß‑Phase (Pflicht)  
-    Spieler stößt eine eigene Figur.
+* Lava (Kill Zone)
+* Geysire (Impuls)
+* Slow‑Zones
+* Falltüren
 
-    Physik‑Phase  
-    Bewegung läuft, bis alle Figuren stillstehen.
+### Offizielle Maps
 
-    Rundenwechsel  
-    Nächster Spieler ist am Zug.
+* **Cue Clash** – klassische Reibung, Hindernisse
+* **Frostbite Arena** – extrem niedrige Reibung
+* **Magma Cradle** – aktive Gefahren & Zonen
 
-# 9. Menüsystem
+---
 
-Das Menü ermöglicht die Konfiguration eines Matches.
-Hauptmenü
+## 8. Spielmodi & Siegbedingungen
 
-    Spielen
+### Spielmodi
 
-    Einstellungen
+* 1v1 PvP
+* 1v1 vs KI
 
-    Profil / Statistiken
+### Siegbedingungen
 
-    Credits
+* Last Man Standing (Standard)
+* Erweiterbar über Daten (z. B. Punkte‑Modi)
 
-    Beenden
+---
 
-Spielkonfiguration
+## 9. KI‑Gegner
 
-    Spielmodus
+Die KI nutzt **dieselben Regeln wie Spieler**.
 
-        1v1 PvP
+### Entscheidungsbasis
 
-        1v1 vs KI
+* Figurenpositionen
+* Arena‑Geometrie
+* Gefahrenzonen
+* Item‑Effekte
+* Out‑of‑Bounds‑Risiko
 
-    Map auswählen
+### KI‑Modell
 
-    Items: EIN/AUS
+* Entscheidung = Winkel + Force
+* Simulation möglicher Züge
+* Bewertung über Heuristiken
 
-    Einzelne Items aktivieren/deaktivieren
+### Schwierigkeitsgrade
 
-    KI‑Schwierigkeit
+* **Leicht** – Zufallsbasierte Entscheidungen
+* **Mittel** – Heuristiken & Risikoabschätzung
+* **Schwer** – Simulation & Optimierung
 
-    Match starten
+Alle KI‑Parameter sind datengetrieben.
 
-Items können global oder einzeln deaktiviert werden.
-# 10. KI‑Gegner
+---
 
-Die KI trifft Entscheidungen basierend auf:
+## 10. Input & Steuerung
 
-    Positionen aller Figuren
+### Abstrakte Aktionen
 
-    Gefahrenzonen
+* Aim (Rotation setzen)
+* Charge (Force aufladen)
+* Push (Stoß ausführen)
+* Use Item
 
-    Items im Inventar
+### Plattformen
 
-    Knockback‑Risiko
+* **PC:** Maus / Tastatur
+* **Controller:** Stick + Trigger
+* **Mobile:** Drag & Hold
 
-    Map‑Effekten
+Input‑Mapping ist vollständig konfigurierbar.
 
-Die KI führt dieselben Aktionen aus wie der Spieler:
+---
 
-    Item wählen
+## 11. UI & UX
 
-    Stoßrichtung bestimmen
+### Design‑Prinzipien
 
-    Stoßstärke berechnen
+* Klar
+* Minimalistisch
+* Taktik im Vordergrund
 
-Schwierigkeitsgrade:
+### Plattformanpassung
 
-    Leicht – zufälliger
+* PC: kompakt
+* Mobile: große Touch‑Elemente
+* Steam Deck: größere Schrift
+* Discord: reduzierte UI
 
-    Mittel – logisch
+---
 
-    Schwer – optimiert
+## 12. Modding‑System
 
-# 11. UI & UX
-PC
+Modding ist ein **Kernfeature**, kein Zusatz.
 
-    Kompakte UI
+### Mod‑Umfang
 
-    Maus‑optimiert
+* Items
+* Maps
+* Hazards
+* Spielmodi
+* KI‑Parameter
 
-Mobile
+### Sicherheit
 
-    Große Buttons
+* Keine Skripte
+* Kein eval
+* Strikte Schema‑Validierung
+* Effekt‑Whitelist
 
-    Touch‑optimiert
+---
 
-    Auto‑Zoom
+## 13. Technik‑Philosophie
 
-Steam Deck
+* Custom Engine
+* Deterministisch
+* Daten‑ und regelgetrieben
+* Engine ≠ Gameplay
 
-    Größere Schrift
+Die Engine ist ein **stabiler Simulator**, kein Regelträger.
 
-    Controller‑Icons
+---
 
-Discord
+## 14. Discord‑Integration
 
-    Minimalistische UI
+* Rich Presence
 
-# 12. Audio & Effekte
+  * Menü / Match
+  * Map
+  * Aktiver Zug
+* Einladungen
+* Join‑Flows
 
-    Stoß‑Sounds
+---
 
-    Item‑Sounds
+## 15. Release‑Plan
 
-    Map‑Ambiente
+### Phase 1 – Prototyp
 
-    Partikeleffekte für Eis, Lava, Geysire
+* Core‑Physik
+* Eine Map
+* Drei Items
 
-# 13. Technik (Unity + C#)
+### Phase 2 – Content
 
-    Unity 2D
+* Alle Maps
+* Alle Items
+* UI
 
-    Neues Input System
+### Phase 3 – KI & Mobile
 
-    ScriptableObjects für Items
+* KI‑Gegner
+* Touch‑Steuerung
 
-    Prefabs für Figuren, Maps, Items
+### Phase 4 – Steam Release
 
-    Build Targets: Windows, Linux, Android, iOS
+* Store Page
+* Playtests
+* Marketing
 
-    Steamworks Integration
+### Phase 5 – Mobile Release
 
-    Discord Rich Presence
+* Android / iOS Builds
 
-# 14. Discord‑Integration
+### Phase 6 – Discord
 
-    Rich Presence (Map, Runde, Status)
+* Rich Presence
+* Einladungen
 
-    Discord‑Einladungen
+---
 
-    Optional: Discord Activities
+## 16. Zusammenfassung
 
-# 15. Mobile‑Anpassungen
+Slipstrike ist ein **taktisches Physikspiel**, dessen Tiefe nicht aus Reaktionsgeschwindigkeit, sondern aus **klaren Regeln, deterministischer Bewegung und datengetriebenem Design** entsteht.
 
-    Touch‑Steuerung
+Die Architektur ermöglicht:
 
-    UI‑Scaling
-
-    Performance‑Optimierung
-
-    Offline‑Modus
-
-# 16. Release‑Plan
-Phase 1 – Prototyp
-
-Core‑Gameplay, eine Map, 3 Items
-Phase 2 – Content
-
-Alle Maps, alle Items, UI
-Phase 3 – KI & Mobile
-
-KI‑Gegner, Touch‑Steuerung
-Phase 4 – Steam Release
-
-Store Page, Playtests, Marketing
-Phase 5 – Mobile Release
-
-Android/iOS Builds
-Phase 6 – Discord Integration
-
-Rich Presence, Einladungen
+* präzises Balancing
+* starke KI
+* Modding‑Community
+* langfristige Erweiterbarkeit

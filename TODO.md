@@ -1,179 +1,207 @@
-# Slipstrike – Entwicklungs-TODO (Custom Engine · p5.js · Web)
-
-Basierend auf GDD v1.1  
-Keine Nutzung von Unity oder fremden Game-Engines  
-Fokus: deterministisches, leichtgewichtiges System
+# Slipstrike – Master TODO
+Custom Engine · p5.js · Datengetrieben · Rotation + Force Physik
 
 ---
 
-## Phase 0 – Fundament & Architektur
-
-### Projekt & Struktur
-- [ ] Git-Repository anlegen
-- [ ] Klare Trennung:
-  - [ ] `/engine` – Rendering, Physik, Input, Loop
-  - [ ] `/game` – Slipstrike-Regeln, Rundenlogik
-  - [ ] `/content` – Maps & Items (JSON)
-  - [ ] `/ui` – Menüs & HUD
-  - [ ] `/assets` – Grafiken & Sounds
-- [ ] Build-Setup (Vite oder statisch)
-
-### Core-Engine
-- [ ] p5.js initialisieren
-- [ ] Fester Game-Loop
-  - [ ] `update(deltaTime)`
-  - [ ] `render()`
-- [ ] Scene-/State-System
-  - [ ] MainMenu
-  - [ ] MatchSetup
-  - [ ] InGame
-  - [ ] Pause
+## Grundprinzip (verbindlich)
+- [ ] Engine = deterministischer Simulator
+- [ ] Engine kennt **keine Spielregeln**
+- [ ] Gameplay = Daten (JSON / Mods)
+- [ ] Bewegung basiert auf:
+  - [ ] Rotation (Richtung)
+  - [ ] Force (Stoßstärke)
 
 ---
 
-## Phase 1 – Prototyp (Core Loop validieren)
+## Phase 0 – Projekt & Architektur
 
-### Physik & Bewegung (Custom, deterministisch)
-- [ ] Eigene 2D-Physik
-  - [ ] Position
-  - [ ] Velocity
-  - [ ] Reibung (Map-basiert)
-  - [ ] Drift-Faktor
-- [ ] Stoß-Mechanik
-  - [ ] Richtung + Stärke
-  - [ ] Bewegung bis Stillstand
-- [ ] Kollisionen
-  - [ ] Figur ↔ Figur
-  - [ ] Figur ↔ Arena
-- [ ] Death-Check (Arena verlassen)
-
-### Rundenlogik
-- [ ] Runden-State-Machine
-  - [ ] Item-Phase (optional)
-  - [ ] Stoß-Phase (Pflicht)
-  - [ ] Physik-Phase (keine Eingaben)
-  - [ ] Spielerwechsel
-- [ ] Zugbasierte Kontrolle (kein Echtzeit-Input)
-
-### Gameplay-Minimum
-- [ ] 1v1 lokal
-- [ ] Eine Map
-- [ ] Drei Items (z. B. Anker, Magnet, Power-Dash)
-- [ ] Siegbedingung (letzte Figur überlebt)
+### Projektstruktur
+- [x] Git-Repository
+- [x] Ordnerstruktur
+  - [x] `/engine`
+  - [ ] `/rules`
+  - [ ] `/content`
+    - [ ] `/items`
+    - [ ] `/maps`
+    - [ ] `/hazards`
+    - [ ] `/modes`
+    - [ ] `/ai`
+    - [ ] `/ui`
+  - [ ] `/mods`
+  - [ ] `/assets`
 
 ---
 
-## Phase 2 – Core-Gameplay & Content
+## Phase 1 – Engine-Kern (nicht auslagerbar)
 
-### Items
-- [ ] Generisches Item-System
-  - [ ] Ein Item pro Runde
-  - [ ] Anwendung auf Figur oder Position
-- [ ] Item-Implementierungen:
-  - [ ] Anker
-  - [ ] Magnet
-  - [ ] Köder
-  - [ ] Falltür
-  - [ ] Power-Dash
-  - [ ] Verzögerte Mine
-  - [ ] Mini-Wall
-  - [ ] Freeze-Shot
-  - [ ] Switch
-  - [ ] Jägermeister Elixier
+### Game Loop
+- [x] Fester Tick (`update(dt)`)
+- [ ] Render-Pass
+- [ ] Deterministische Reihenfolge
+
+---
+
+## Phase 2 – Physiksystem (Rotation + Force)
+
+### Figure Physics Model
+- [ ] Figure-State
+  - [ ] Position (Vec2)
+  - [ ] Rotation (float)
+  - [ ] Velocity (Vec2)
+  - [ ] Angular Velocity (optional)
+- [ ] Forward-Vektor aus Rotation berechnen
+
+### Stoß-Mechanik
+- [ ] Stoßparameter
+  - [ ] Richtung = Rotation
+  - [ ] Stärke = Force
+- [ ] Force → Velocity-Impuls
+- [ ] Modifizierbare Force (Items, Map)
+
+### Bewegung
+- [ ] Positionsintegration
+- [ ] Reibung (Map-basiert)
+- [ ] Stillstand-Erkennung (Velocity < Threshold)
+
+### Drift-System
+- [ ] Drift-Faktor (Map)
+- [ ] Lenkung:
+  - [ ] Velocity tendiert zur Forward-Richtung
+- [ ] Extreme Drift für Eis-Maps
+
+---
+
+## Phase 3 – Kollision & Reaktion
+
+### Kollisionen
+- [ ] Figur ↔ Figur
+- [ ] Figur ↔ Arena
+- [ ] Impuls-Weitergabe
+- [ ] Richtungsänderung durch Normalen
+
+### Arena-Grenzen
+- [ ] Out-of-Bounds-Erkennung
+- [ ] Death-Event
+
+---
+
+## Phase 4 – Runden- & Regel-Interpreter
+
+### Runden-State-Machine (JSON)
+- [ ] Item-Phase
+- [ ] Stoß-Phase
+- [ ] Physik-Phase
+- [ ] Spielerwechsel
+
+### Regeln (datengetrieben)
+- [ ] Items pro Runde
+- [ ] Stoßstärke-Limits
+- [ ] Zug-Reihenfolge
+
+---
+
+## Phase 5 – Items (100 % Modding)
+
+### Item-System
+- [ ] Item-Schema
+- [ ] Validator
+- [ ] Loader
+
+### Effekt-Typen (Engine)
+- [ ] modifyForce
+- [ ] modifyRotation
+- [ ] lockRotation
+- [ ] applyTorque
+- [ ] spawnTrigger
+- [ ] delayedEffect
+- [ ] shield
+- [ ] freeze
+
+### GDD-Items als JSON
+- [ ] Anker (Force-Multiplikator)
+- [ ] Magnet (Force-Zugrichtung)
+- [ ] Power-Dash (Force-Boost)
+- [ ] Switch (Positions-Tausch)
+- [ ] etc.
+
+---
+
+## Phase 6 – Maps & Hazards (Modding)
 
 ### Maps
-- [ ] Map-Datenmodell (JSON)
+- [ ] Map-Schema
   - [ ] Reibung
   - [ ] Drift
-  - [ ] Gefahrenzonen
-- [ ] Map-Implementierungen:
-  - [ ] Cue Clash
-  - [ ] Frostbite Arena
-  - [ ] Magma Cradle
+  - [ ] Arena-Form
 
-### UI & UX
-- [ ] HUD
-  - [ ] Aktiver Spieler
-  - [ ] Aktives Item
-- [ ] Match-Konfiguration
-  - [ ] Map-Auswahl
-  - [ ] Items EIN/AUS
-  - [ ] KI-Schwierigkeit
-- [ ] Pause-Menü
+### Hazards
+- [ ] Hazard-Registry
+- [ ] Effekte:
+  - [ ] ApplyForce
+  - [ ] ApplyRotation
+  - [ ] KillZone
 
 ---
 
-## Phase 3 – KI & Mobile
+## Phase 7 – Input-System (Richtung = Rotation)
 
-### KI-Gegner
-- [ ] KI-Datenmodell
-  - [ ] Figurenpositionen
-  - [ ] Gefahrenzonen
-  - [ ] Knockback-Risiko
-- [ ] KI-Aktionen
-  - [ ] Item-Auswahl
-  - [ ] Stoßrichtung
-  - [ ] Stoßstärke
-- [ ] Schwierigkeitsgrade
-  - [ ] Leicht (zufällig)
-  - [ ] Mittel (heuristisch)
-  - [ ] Schwer (Simulation / Optimierung)
+### Actions
+- [ ] Aim (Rotation setzen)
+- [ ] Charge (Force aufladen)
+- [ ] Push (Force anwenden)
+- [ ] UseItem
 
-### Mobile-Unterstützung
-- [ ] Touch-Input
-  - [ ] Ziehen = Richtung
-  - [ ] Halten = Stärke
-- [ ] Touch-optimierte UI
-- [ ] Responsive Skalierung
-- [ ] Performance-Optimierung
+### Mapping
+- [ ] Mouse
+- [ ] Touch
+- [ ] Controller
 
 ---
 
-## Phase 4 – Desktop / Steam Release
+## Phase 8 – KI (Rotation + Force)
 
-### Technik
-- [ ] Desktop-Wrapper (Electron / Tauri)
-- [ ] Fullscreen & Window-Handling
-- [ ] Persistente Savegames
-- [ ] Controller-Support
+### KI-Modell
+- [ ] Zielwinkel berechnen
+- [ ] Force evaluieren
+- [ ] Risikoabschätzung (Out-of-Bounds)
 
-### Steam
-- [ ] Steamworks-Integration
-- [ ] Store Page
-- [ ] Playtests
-- [ ] Marketing-Material
-- [ ] Achievements (optional)
+### Schwierigkeit
+- [ ] Leicht – Zufallswinkel
+- [ ] Mittel – Heuristik
+- [ ] Schwer – Simulation (Winkel × Force)
 
 ---
 
-## Phase 5 – Mobile Release
+## Phase 9 – UI & UX
 
-### Builds
-- [ ] Android Build (Capacitor / WebView)
-- [ ] iOS Build
+### UI
+- [ ] Richtungsanzeige
+- [ ] Force-Meter
+- [ ] Aktives Item
+
+---
+
+## Phase 10 – Plattformen
+
+### Desktop
+- [ ] Electron / Tauri
+- [ ] Savegames
+
+### Mobile
+- [ ] Touch-Steuerung
 - [ ] Offline-Modus
-- [ ] Mobile Performance-Pass
 
 ---
 
-## Phase 6 – Discord Integration
+## Phase 11 – Discord
 
 ### Rich Presence
-- [ ] Discord Developer App
-- [ ] RPC-Anbindung
-- [ ] Status-Infos
-  - [ ] Menü / In Match
-  - [ ] Aktuelle Map
-  - [ ] Runde / Spielerzug
-
-### Social Features
-- [ ] Spiel-Einladungen
-- [ ] Join-Session-Flow
-- [ ] Party-Status
+- [ ] Status
+- [ ] Map
+- [ ] Runde
 
 ---
 
-## Optional / Später
-- [ ] Replays
-- [ ] Modding (JSON)
-- [ ] Statistiken / Profile
+## Optional
+- [ ] Replays (Rotation + Force = perfekt deterministisch)
+- [ ] Mod-Workshop
