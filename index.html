@@ -2,12 +2,30 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Game</title>
-	<link href="src/style/index.css" rel="stylesheet">
-	<script defer src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
-	<script defer src="/sketch.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game</title>
+
+    <link href="src/style/index.css" rel="stylesheet">
+
+    <!-- p5.js zuerst laden -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+
+    <!-- ENTITY -->
+    <script src="src/entity/Figure.js"></script>
+    <script src="src/entity/Player.js"></script>
+
+    <!-- ENGINE -->
+    <script src="src/engine/ForceSystem.js"></script>
+    <script src="src/engine/MovementSystem.js"></script>
+    <script src="src/engine/DriftSystem.js"></script>
+    <script src="src/engine/CollisionSystem.js"></script>
+    <script src="src/engine/ArenaBounds.js"></script>
+    <script src="src/engine/PhysicsEngine.js"></script>
+	<script src="src/engine/EventSystem.js"></script>
+
+    <!-- MAIN GAME LOOP -->
+    <script src="sketch.js"></script>
 </head>
 
 <body>

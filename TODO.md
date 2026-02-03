@@ -44,37 +44,37 @@ Custom Engine · p5.js · Datengetrieben · Rotation + Force Physik
 ## Phase 2 – Physiksystem (Rotation + Force)
 
 ### Figure Physics Model
-- [ ] Figure-State
-  - [ ] Position (Vec2)
-  - [ ] Rotation (float)
-  - [ ] Velocity (Vec2)
-  - [ ] Angular Velocity (optional)
-- [ ] Forward-Vektor aus Rotation berechnen
+- [x] Figure-State
+  - [x] Position (Vec2)
+  - [x] Rotation (float)
+  - [x] Velocity (Vec2)
+  - [x] Angular Velocity (optional)
+- [x] Forward-Vektor aus Rotation berechnen
 
 ### Stoß-Mechanik
-- [ ] Stoßparameter
-  - [ ] Richtung = Rotation
-  - [ ] Stärke = Force
-- [ ] Force → Velocity-Impuls
-- [ ] Modifizierbare Force (Items, Map)
+- [x] Stoßparameter
+  - [x] Richtung = Rotation
+  - [x] Stärke = Force
+- [x] Force → Velocity-Impuls
+- [x] Modifizierbare Force (Items, Map)
 
 ### Bewegung
-- [ ] Positionsintegration
-- [ ] Reibung (Map-basiert)
-- [ ] Stillstand-Erkennung (Velocity < Threshold)
+- [x] Positionsintegration
+- [x] Reibung (Map-basiert)
+- [x] Stillstand-Erkennung (Velocity < Threshold)
 
 ### Drift-System
-- [ ] Drift-Faktor (Map)
-- [ ] Lenkung:
-  - [ ] Velocity tendiert zur Forward-Richtung
-- [ ] Extreme Drift für Eis-Maps
+- [x] Drift-Faktor (Map)
+- [x] Lenkung:
+  - [x] Velocity tendiert zur Forward-Richtung
+- [x] Extreme Drift für Eis-Maps
 
 ---
 
 ## Phase 3 – Kollision & Reaktion
 
 ### Kollisionen
-- [ ] Figur ↔ Figur
+- [x] Figur ↔ Figur
 - [ ] Figur ↔ Arena
 - [ ] Impuls-Weitergabe
 - [ ] Richtungsänderung durch Normalen
