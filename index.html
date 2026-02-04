@@ -2,30 +2,34 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Game</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Game</title>
 
-    <link href="src/style/index.css" rel="stylesheet">
+	<link href="src/style/index.css" rel="stylesheet">
 
-    <!-- p5.js zuerst laden -->
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+	<!-- p5.js zuerst laden -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script> -->
+	<script src="/src/lib/p5.js"></script>
 
-    <!-- ENTITY -->
-    <script src="src/entity/Figure.js"></script>
-    <script src="src/entity/Player.js"></script>
+	<!-- ENTITY -->
+	<script src="src/entity/Figure.js"></script>
+	<script src="src/entity/player.js"></script>
 
-    <!-- ENGINE -->
-    <script src="src/engine/ForceSystem.js"></script>
-    <script src="src/engine/MovementSystem.js"></script>
-    <script src="src/engine/DriftSystem.js"></script>
-    <script src="src/engine/CollisionSystem.js"></script>
-    <script src="src/engine/ArenaBounds.js"></script>
-    <script src="src/engine/PhysicsEngine.js"></script>
+	<!-- ENGINE -->
+	<script src="src/engine/ForceSystem.js"></script>
+	<script src="src/engine/MovementSystem.js"></script>
+	<script src="src/engine/DriftSystem.js"></script>
+	<script src="src/engine/CollisionSystem.js"></script>
+	<script src="src/engine/ArenaBounds.js"></script>
+	<script src="src/engine/PhysicsEngine.js"></script>
 	<script src="src/engine/EventSystem.js"></script>
+	<script src="src/engine/UserInput.js"></script>
+	<script src="src/engine/Structures.js"></script>
 
-    <!-- MAIN GAME LOOP -->
-    <script src="sketch.js"></script>
+	<!-- MAIN GAME LOOP -->
+	<script src="src/engine/Handler.js"></script>
+	<script src="sketch.js"></script>
 </head>
 
 <body>
