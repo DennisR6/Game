@@ -2,16 +2,21 @@ import type { Settings } from "../settings/setttings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
+import { p5Physics } from "../physics/p5Physics";
+import type { IPhysics, PhysicsStrategy } from "../physics/physics";
 
 
 export class Handler implements Renderer, Drawer {
 	entitys: Array<IEntity>;
 	structures: Array<Structure>;
+	physics: PhysicsStrategy
 	constructor(settings?: Settings) {
 		this.entitys = [];
 		this.structures = [];
-		if (settings != undefined)
+		this.physics = new p5Physics()
+		if (settings != undefined) {
 			this.importSettings(settings)
+		}
 	}
 
 	importSettings(settings: Settings) {
@@ -69,6 +74,7 @@ export class Handler implements Renderer, Drawer {
 		this.entitys.push(entity)
 	}
 	draw(ctx: RenderContext) {
+		ctx.clear()
 		for (const structure of this.structures) {
 			structure.draw(ctx)
 		}
@@ -77,8 +83,32 @@ export class Handler implements Renderer, Drawer {
 		}
 	}
 	render(deltatime: number) {
+		const queue = [...this.entitys, ...this.structures];
+		for (const entity of queue) {
+			// Hier passiert die Kollisionsprüfung
+			// Da es rundenbasiert ist, kann hier auch die Vorhersage-Logik rein
+		}
 		for (const entity of this.entitys) {
 			entity.render(deltatime)
 		}
+	}
+
+	handleEntityCollision(entityA: IPhysics, entityB: IPhysics) {
+		switch (true) {
+			case (entityA.shape == "circle" && entityB.shape == "rectangle"): {
+
+				break
+			}
+			case (entityA.shape == "rectangle" && entityB.shape == "rectangle"): {
+				break
+			}
+			case (entityA.shape == "rectangle" && entityB.shape == "circle"): {
+				break
+			}
+		}
+		// const result = this.physics.calculateBounce(entityA, entityB);
+		// if (result) {
+		//
+		// }
 	}
 }
