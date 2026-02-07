@@ -75,20 +75,21 @@ export default {
 		{ type: "rectangle", x: 460, y: 500, w: 180, h: thickness, color: "blue" },
 
 		// Circles
-		{ type: "circle", x: 100, y: 100, r: 60, color: "green" },
+		{ type: "circle", x: 100, y: 100, r: 30, color: "green" },
 		// OBEN MITTE
-		{ type: "circle", x: 400, y: 100, r: 60, color: "green" },
+		{ type: "circle", x: 400, y: 100, r: 30, color: "green" },
 		// OBEN RECHTS
-		{ type: "circle", x: 700, y: 100, r: 60, color: "green" },
+		{ type: "circle", x: 700, y: 100, r: 30, color: "green" },
 		// UNTEN LINKS
-		{ type: "circle", x: 100, y: 500, r: 60, color: "green" },
+		{ type: "circle", x: 100, y: 500, r: 30, color: "green" },
 		// UNTEN MITTE
-		{ type: "circle", x: 400, y: 500, r: 60, color: "green" },
+		{ type: "circle", x: 400, y: 500, r: 30, color: "green" },
 		// UNTEN RECHTS
-		{ type: "circle", x: 700, y: 500, r: 60, color: "green" },
+		{ type: "circle", x: 700, y: 500, r: 30, color: "green" },
 	],
 	players: [
 		{ x: 300, y: 300, color: "green", playericon: "", team: 0 },
+		{ x: 600, y: 300, color: "red", playericon: "", team: 1 },
 	],
 	friction: 0.05,
 	items: [],

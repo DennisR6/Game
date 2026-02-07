@@ -22,7 +22,8 @@ export class Player implements IEntity {
 		this.id = id || 0
 	}
 	draw(ctx: RenderContext): void {
-		ctx.drawCircle(this.x, this.y, 12, this.color)
+		ctx.setFillColor(this.color)
+		ctx.drawCircle(this.x, this.y, 12)
 	}
 	render(_deltatime: number): void {
 		//TODO
