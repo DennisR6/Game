@@ -15,14 +15,14 @@ export class P5Renderer implements RenderContext {
 	drawImage(image: p5.Image, x: number, y: number, width: number, height: number) {
 		this.p5ctx.image(image, x, y, width, height)
 	}
-	drawCircle(x: number, y: number, radius: number, color: string) {
-		this.p5ctx.fill(color)
-		this.p5ctx.circle(x, y, radius)
+	drawCircle(x: number, y: number, radius: number) {
+		this.p5ctx.circle(x, y, radius * 2)
 	}
 	drawRect(x: number, y: number, width: number, height: number) {
 		this.p5ctx.rect(x, y, width, height)
 	}
-	drawText(text: string, x: number, y: number) {
+	drawText(text: string, x: number, y: number, fontSize?: number) {
+		this.p5ctx.textSize(fontSize || 12)
 		this.p5ctx.text(text, x, y)
 	}
 	clear() {

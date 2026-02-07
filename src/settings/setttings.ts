@@ -1,55 +1,97 @@
 export interface Settings {
 	mapBoundarys?: MapBoundary[];
-	players?: Player[];
+	players?: Entity[];
 	friction?: number;
 	effects?: Effect[];
 	items?: any[];
 	background?: Background;
+	screenResolution: ScreenResolution;
+}
+export interface ScreenResolution {
+	x: number,
+	y: number,
+	factor: number,
+}
+export type Background = BackgroundColor | BackgroundImage
+
+export interface BackgroundImage {
+	type: "image"
+	url: string
+}
+export interface BackgroundColor {
+	type: "color"
+	color: string
 }
 
-export interface Background {
-	type: string;
-	url: string;
-}
 
 export interface Effect {
 	type: string;
 	value: number;
 }
 
-export type MapBoundaryType = "circle" | "line" | "rectangle"
-export interface MapBoundary {
-	type: MapBoundaryType;
+export type MapBoundary = MapBoundaryCircle | MapBoundaryLine | MapBoundaryRect
+export interface MapBoundaryCircle {
+	type: "circle"
 	x: number;
 	y: number;
-}
-export interface MapBoundaryCircle extends MapBoundary {
 	r: number;
 	color: string;
 }
-export interface MapBoundaryLine extends MapBoundary {
+export interface MapBoundaryLine {
+	type: "line"
+	x: number;
+	y: number;
 	x2: number;
 	y2: number;
 	color: string;
 }
-export interface MapBoundaryRect extends MapBoundary {
+export interface MapBoundaryRect {
+	type: "rectangle"
+	x: number;
+	y: number;
 	w: number;
 	h: number;
 	color: string;
 }
 
-export interface Player {
+export interface Entity {
 	x: number;
 	y: number;
 	color: string;
+	team: number;
 	playericon: string;
 }
 
-export const defaultSettings: Settings = {
+const thickness = 2
+export default {
+	screenResolution: { x: 100, y: 100, factor: 100 },
 	mapBoundarys: [
-		{ type: "circle", x: 100, y: 100, color: "green", r: 60 } as MapBoundaryCircle,
+		// Rectangles
+		{ type: "rectangle", x: 160, y: 100, w: 180, h: thickness, color: "blue" },
+		{ type: "rectangle", x: 460, y: 100, w: 180, h: thickness, color: "blue" },
+		{ type: "rectangle", x: 100, y: 160, w: thickness, h: 280, color: "blue" },
+		{ type: "rectangle", x: 700, y: 160, w: thickness, h: 280, color: "blue" },
+		{ type: "rectangle", x: 160, y: 500, w: 180, h: thickness, color: "blue" },
+		{ type: "rectangle", x: 460, y: 500, w: 180, h: thickness, color: "blue" },
+
+		// Circles
+		{ type: "circle", x: 100, y: 100, r: 60, color: "green" },
+		// OBEN MITTE
+		{ type: "circle", x: 400, y: 100, r: 60, color: "green" },
+		// OBEN RECHTS
+		{ type: "circle", x: 700, y: 100, r: 60, color: "green" },
+		// UNTEN LINKS
+		{ type: "circle", x: 100, y: 500, r: 60, color: "green" },
+		// UNTEN MITTE
+		{ type: "circle", x: 400, y: 500, r: 60, color: "green" },
+		// UNTEN RECHTS
+		{ type: "circle", x: 700, y: 500, r: 60, color: "green" },
 	],
 	players: [
-		{ x: 150, y: 150, color: "red", playericon: "" }
-	]
-}
+		{ x: 300, y: 300, color: "green", playericon: "", team: 0 },
+	],
+	friction: 0.05,
+	items: [],
+	background: { type: "color", color: "black" },
+
+} as Settings

@@ -1,6 +1,6 @@
 export interface RenderContext {
-	drawCircle(x: number, y: number, radius: number, color: string): void;
-	drawRect(x: number, y: number, width: number, height: number, color: string): void;
+	drawCircle(x: number, y: number, radius: number): void;
+	drawRect(x: number, y: number, width: number, height: number): void;
 	drawText(text: string, x: number, y: number, fontSize?: number): void;
 	setFillColor(color: string): void;
 	setStrokeColor(color: string): void;
