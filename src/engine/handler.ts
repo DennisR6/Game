@@ -3,7 +3,7 @@ import { type Structure, StructureCircle, StructureLine, StructureRectangle } fr
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
 import { p5Physics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
-import { BackgroundColor, type IBackground } from "../background/background";
+import { BackgroundColor,BackgroundImage type IBackground } from "../background/background";
 
 
 export class Handler implements Renderer, Drawer {
@@ -19,7 +19,7 @@ export class Handler implements Renderer, Drawer {
 		this.physics = new p5Physics()
 		if (settings?.background?.type === "color") {
 			//@ts-ignore
-			this.background = new BackgroundColor(settings.background)
+			this.background = new BackgroundColor(settings.background.color)
 		}
 		if (settings != undefined) {
 			this.importSettings(settings)
@@ -69,7 +69,9 @@ export class Handler implements Renderer, Drawer {
 			// das ist temporär da, solange die implementierung fehlt, wenn diese da ist muss das "@ts-ignore" weg
 			if (settings.background?.type === "color") {
 				//@ts-ignore
-				this.background = new BackgroundColor(settings.background)
+				this.background = new BackgroundColor(settings.background.color)
+			} else if (settings.background?.type === "image") {
+				this.background = new BackgroundImage(settings.background.url)
 			}
 
 			// TODO: importiere die Effekte

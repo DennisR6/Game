@@ -23,7 +23,6 @@ export interface BackgroundColor {
 	color: string
 }
 
-
 export interface Effect {
 	type: string;
 	value: number;
@@ -91,6 +90,7 @@ export default {
 	],
 	friction: 0.05,
 	items: [],
-	background: { type: "color", color: "blue" },
+	// background: { type: "color", color: "blue" }
+	background: { type: "image", url: "blue" },
 
 } as Settings
