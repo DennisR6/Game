@@ -3,7 +3,7 @@ import { type Structure, StructureCircle, StructureLine, StructureRectangle } fr
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
 import { defaultPhysics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
-import { BackgroundColor,BackgroundImage, type IBackground } from "../background/background";
+import { BackgroundColor, BackgroundImage, type IBackground } from "../background/background";
 
 
 export class Handler implements Renderer, Drawer {
@@ -117,7 +117,7 @@ export class Handler implements Renderer, Drawer {
 		}
 	}
 	// TODO: 
-	handleEntityCollision(entityA: IPhysics, entityB: IPhysics) {
+	handleEntityCollision(_entityA: IPhysics, _entityB: IPhysics) {
 		// this.physics.intersect(entityA, entityB)
 	}
 }
