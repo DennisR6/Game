@@ -4,7 +4,7 @@ export interface RenderContext {
 	drawText(text: string, x: number, y: number, fontSize?: number): void;
 	setFillColor(color: string): void;
 	setStrokeColor(color: string): void;
-	clear(): void;
+	clear(color?: string): void;
 }
 
 export interface Renderer {

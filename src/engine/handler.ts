@@ -1,19 +1,26 @@
-import type { Settings } from "../settings/setttings";
+import type { Background, Settings } from "../settings/setttings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
 import { p5Physics } from "../physics/p5Physics";
 import type { IPhysics, PhysicsStrategy } from "../physics/physics";
+import { BackgroundColor, type IBackground } from "../background/background";
 
 
 export class Handler implements Renderer, Drawer {
 	entitys: Array<IEntity>;
 	structures: Array<Structure>;
 	physics: PhysicsStrategy
+	//@ts-ignore
+	background: IBackground
 	constructor(settings?: Settings) {
 		this.entitys = [];
 		this.structures = [];
 		this.physics = new p5Physics()
+		if (settings?.background?.type === "color") {
+			//@ts-ignore
+			this.background = new BackgroundColor(settings.background.color)
+		}
 		if (settings != undefined) {
 			this.importSettings(settings)
 		}
@@ -60,7 +67,9 @@ export class Handler implements Renderer, Drawer {
 			settings.items
 			// TODO: importiere die Hintergründe
 			// NOTE: dies wäre für dich eine einfache Übung, es komplett zu implementieren
-			settings.background
+			if (settings.background?.type === "color") {
+				this.background = new BackgroundColor(settings.background.color)
+			}
 
 			// TODO: importiere die Effekte 
 			settings.effects
@@ -74,7 +83,8 @@ export class Handler implements Renderer, Drawer {
 		this.entitys.push(entity)
 	}
 	draw(ctx: RenderContext) {
-		ctx.clear()
+		ctx.clear("white")
+		this.background.draw(ctx)
 		for (const structure of this.structures) {
 			structure.draw(ctx)
 		}
@@ -84,8 +94,8 @@ export class Handler implements Renderer, Drawer {
 	}
 	render(deltatime: number) {
 		const queue = [...this.entitys, ...this.structures];
-		for (const entity of queue) {
-			// Hier passiert die Kollisionsprüfung
+		for (const _entity of queue) {
+			// TODO: Hier passiert die Kollisionsprüfung
 			// Da es rundenbasiert ist, kann hier auch die Vorhersage-Logik rein
 		}
 		for (const entity of this.entitys) {
@@ -96,7 +106,6 @@ export class Handler implements Renderer, Drawer {
 	handleEntityCollision(entityA: IPhysics, entityB: IPhysics) {
 		switch (true) {
 			case (entityA.shape == "circle" && entityB.shape == "rectangle"): {
-
 				break
 			}
 			case (entityA.shape == "rectangle" && entityB.shape == "rectangle"): {

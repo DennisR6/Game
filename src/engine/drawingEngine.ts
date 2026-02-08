@@ -25,7 +25,11 @@ export class P5Renderer implements RenderContext {
 		this.p5ctx.textSize(fontSize || 12)
 		this.p5ctx.text(text, x, y)
 	}
-	clear() {
-		this.p5ctx.clear()
+	clear(color?: string): void {
+		if (color) {
+			this.setFillColor(color)
+			this.p5ctx.rect(0, 0, this.p5ctx.width, this.p5ctx.height)
+		}
+		else this.p5ctx.clear()
 	}
 }

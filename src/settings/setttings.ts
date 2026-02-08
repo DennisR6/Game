@@ -93,6 +93,6 @@ export default {
 	],
 	friction: 0.05,
 	items: [],
-	background: { type: "color", color: "black" },
+	background: { type: "color", color: "blue" },
 
 } as Settings

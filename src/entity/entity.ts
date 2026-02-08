@@ -2,8 +2,7 @@ import type { Drawer, RenderContext, Renderer } from "../engine/RenderContext";
 import type { IPhysicsCircle, Vector2D } from "../physics/physics";
 
 export interface IEntity extends Drawer, Renderer, IPhysicsCircle {
-	x: number;
-	y: number;
+	position: Vector2D
 }
 
 export class Player implements IEntity {
