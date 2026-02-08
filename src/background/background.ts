@@ -27,16 +27,14 @@ export interface BackgroundImage extends Drawer, Renderer {
 
 export class BackgroundColor implements BackgroundColor {
 	color: string
-	// NOTE: Dieser Konstruktor ist aktuell leer, der müsste befüllt und initialisiert
-	// werden damit er passt
-	// TIPP: es ist eine einzige Zeile Code!
-	constructor() {
+
+	constructor(bg: BackgroundColor) {
+		this.color = bg.color
 	}
 	// NOTE: Das bleibt leer, es ist für zukünftige Animationen, aktuell uninteressant
 	// im aktuellen Stadium des Projekts
 	render(_deltatime: number): void { }
 	draw(ctx: RenderContext): void {
-		// NOTE: Hier kommt deine Logik rein 
-		//TIPP: es ist eine einzige Zeile Code!
+		ctx.clear(this.color)
 	}
 }
