@@ -2,8 +2,8 @@ import type { Settings } from "../settings/setttings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
-import { p5Physics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
-import { BackgroundColor,BackgroundImage type IBackground } from "../background/background";
+import { defaultPhysics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
+import { BackgroundColor,BackgroundImage, type IBackground } from "../background/background";
 
 
 export class Handler implements Renderer, Drawer {
@@ -16,7 +16,7 @@ export class Handler implements Renderer, Drawer {
 	constructor(settings?: Settings) {
 		this.entitys = [];
 		this.structures = [];
-		this.physics = new p5Physics()
+		this.physics = new defaultPhysics()
 		if (settings?.background?.type === "color") {
 			//@ts-ignore
 			this.background = new BackgroundColor(settings.background.color)
@@ -101,9 +101,16 @@ export class Handler implements Renderer, Drawer {
 	// NOTE: stable
 	render(deltatime: number) {
 		const queue = [...this.entitys, ...this.structures];
-		for (const _entity of queue) {
-			// TODO: Hier passiert die Kollisionsprüfung
-			// Da es rundenbasiert ist, kann hier auch die Vorhersage-Logik rein
+		for (let i = 0; i < queue.length; i++) {
+			for (let j = i + 1; j < queue.length; j++) {
+				const entity = queue[i];
+				const entity2 = queue[j];
+
+
+				if (this.physics.dist(entity.getPos(), entity2.getPos())) {
+					// TODO: Kollision behandeln
+				}
+			}
 		}
 		for (const entity of this.entitys) {
 			entity.render(deltatime)
@@ -111,20 +118,6 @@ export class Handler implements Renderer, Drawer {
 	}
 	// TODO: 
 	handleEntityCollision(entityA: IPhysics, entityB: IPhysics) {
-		switch (true) {
-			case (entityA.shape == "circle" && entityB.shape == "rectangle"): {
-				break
-			}
-			case (entityA.shape == "rectangle" && entityB.shape == "rectangle"): {
-				break
-			}
-			case (entityA.shape == "rectangle" && entityB.shape == "circle"): {
-				break
-			}
-		}
-		// const result = this.physics.calculateBounce(entityA, entityB);
-		// if (result) {
-		//
-		// }
+		// this.physics.intersect(entityA, entityB)
 	}
 }
