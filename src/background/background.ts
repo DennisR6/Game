@@ -28,7 +28,7 @@ export interface BackgroundImage extends Drawer, Renderer {
 export class BackgroundColor implements BackgroundColor {
 	color: string
 
-	constructor(bg : string) {
+	constructor(bg: string) {
 		this.color = bg
 	}
 	// NOTE: Das bleibt leer, es ist für zukünftige Animationen, aktuell uninteressant
@@ -42,11 +42,11 @@ export class BackgroundColor implements BackgroundColor {
 export class BackgroundImage implements BackgroundImage {
 	url: string
 
-	constructor(bildurl : string){
+	constructor(bildurl: string) {
 		this.url = bildurl
 	}
-	render(deltatime: number): void {}
-	draw(ctx: RenderContext): void {
+	render(_deltatime: number): void { }
+	draw(_ctx: RenderContext): void {
 	}
 }
 
