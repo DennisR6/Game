@@ -6,15 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npx tsx tests/test.test.ts"
   },
   "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^7.2.4",
     "@types/bun": "latest",
     "@types/node": "^25.2.1",
     "@types/p5": "^1.7.7",
-    "@types/web": "^0.0.327"
+    "@types/web": "^0.0.327",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
   },
   "dependencies": {
     "p5": "^2.2.0"
