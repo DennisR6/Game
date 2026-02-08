@@ -72,17 +72,17 @@ export default {
 		{ type: "rectangle", x: 460, y: 500, w: 180, h: thickness, color: "blue" },
 
 		// Circles
-		{ type: "circle", x: 100, y: 100, r: 30, color: "green" },
+		{ type: "circle", x: 100, y: 100, r: 30, color: "red" },
 		// OBEN MITTE
-		{ type: "circle", x: 400, y: 100, r: 30, color: "green" },
+		{ type: "circle", x: 400, y: 100, r: 30, color: "red" },
 		// OBEN RECHTS
-		{ type: "circle", x: 700, y: 100, r: 30, color: "green" },
+		{ type: "circle", x: 700, y: 100, r: 30, color: "red" },
 		// UNTEN LINKS
-		{ type: "circle", x: 100, y: 500, r: 30, color: "green" },
+		{ type: "circle", x: 100, y: 500, r: 30, color: "red" },
 		// UNTEN MITTE
-		{ type: "circle", x: 400, y: 500, r: 30, color: "green" },
+		{ type: "circle", x: 400, y: 500, r: 30, color: "red" },
 		// UNTEN RECHTS
-		{ type: "circle", x: 700, y: 500, r: 30, color: "green" },
+		{ type: "circle", x: 700, y: 500, r: 30, color: "red" },
 	],
 	players: [
 		{ x: 300, y: 300, color: "green", playericon: "", team: 0 },
@@ -90,7 +90,7 @@ export default {
 	],
 	friction: 0.05,
 	items: [],
-	// background: { type: "color", color: "blue" }
-	background: { type: "image", url: "blue" },
+	background: { type: "color", color: "blue" },
+	// background: { type: "image", url: "blue" },
 
 } as Settings

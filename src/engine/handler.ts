@@ -10,20 +10,19 @@ export class Handler implements Renderer, Drawer {
 	entitys: Array<IEntity>;
 	structures: Array<Structure>;
 	physics: PhysicsStrategy
-	// TODO: das kommt nach der Background implementierung auch weg
-	//@ts-ignore
 	background: IBackground
+	friction: number
 	constructor(settings?: Settings) {
 		this.entitys = [];
 		this.structures = [];
 		this.physics = new defaultPhysics()
+		this.friction = 1
 		if (settings?.background?.type === "color") {
-			//@ts-ignore
 			this.background = new BackgroundColor(settings.background.color)
 		}
 		if (settings != undefined) {
 			this.importSettings(settings)
-		}
+		} this.background = new BackgroundColor("green")
 	}
 
 	// TODO:
@@ -61,7 +60,7 @@ export class Handler implements Renderer, Drawer {
 			// NOTE: die Sachen die aktuell keine direkte Implementation haben, brauchen auch keine Implentation hier,
 			// weil es sich das Interface noch ändern kann
 			// TODO: importiere die Global Friction
-			settings.friction
+			this.friction = settings.friction!
 			// TODO: importiere die item-Settings 
 			settings.items
 			// TODO: importiere die Hintergründe
