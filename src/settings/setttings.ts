@@ -30,25 +30,23 @@ export interface Effect {
 }
 
 export type MapBoundary = MapBoundaryCircle | MapBoundaryLine | MapBoundaryRect
-export interface MapBoundaryCircle {
-	type: "circle"
+export interface IMapBoundary {
 	x: number;
 	y: number;
+}
+export interface MapBoundaryCircle extends IMapBoundary {
+	type: "circle"
 	r: number;
 	color: string;
 }
-export interface MapBoundaryLine {
+export interface MapBoundaryLine extends IMapBoundary {
 	type: "line"
-	x: number;
-	y: number;
 	x2: number;
 	y2: number;
 	color: string;
 }
-export interface MapBoundaryRect {
+export interface MapBoundaryRect extends IMapBoundary {
 	type: "rectangle"
-	x: number;
-	y: number;
 	w: number;
 	h: number;
 	color: string;

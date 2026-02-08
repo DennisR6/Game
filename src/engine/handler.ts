@@ -1,9 +1,8 @@
-import type { Background, Settings } from "../settings/setttings";
+import type { Settings } from "../settings/setttings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
-import { p5Physics } from "../physics/p5Physics";
-import type { IPhysics, PhysicsStrategy } from "../physics/physics";
+import { p5Physics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
 import { BackgroundColor, type IBackground } from "../background/background";
 
 
@@ -11,6 +10,7 @@ export class Handler implements Renderer, Drawer {
 	entitys: Array<IEntity>;
 	structures: Array<Structure>;
 	physics: PhysicsStrategy
+	// TODO: das kommt nach der Background implementierung auch weg
 	//@ts-ignore
 	background: IBackground
 	constructor(settings?: Settings) {
@@ -26,29 +26,29 @@ export class Handler implements Renderer, Drawer {
 		}
 	}
 
+	// TODO:
 	importSettings(settings: Settings) {
 		// NOTE: Importiere alle Wände
 		settings.mapBoundarys?.forEach(structure => {
 			switch (structure.type) {
 				case "circle": {
-					// NOTE: Das ist typescript Magie, weil der Type Structure kein StructureCircle ist aber andersrum ist ein StructureCircle ein Structure
-					const { x, y, r, color } = (structure as unknown as StructureCircle)
+					const { x, y, r, color } = structure
 					this.structures.push(new StructureCircle(x, y, r, color))
 					break
 				}
 				case "line": {
-					const { x, y, x2, y2, color } = (structure as unknown as StructureLine)
+					const { x, y, x2, y2, color } = structure
 					this.structures.push(new StructureLine(x, y, x2, y2, color))
 					break
 				}
 				case "rectangle": {
-					const { x, y, w, h, color } = (structure as unknown as StructureRectangle)
+					const { x, y, w, h, color } = structure
 					this.structures.push(new StructureRectangle(x, y, w, h, color))
 					break
 				}
 				default:
-					//@ts-ignore
-					console.log(`${structure.type} is not Implemented yet.`)
+					const e: never = structure
+					console.log(`${(e as any).type} is not Implemented yet.`)
 					return
 			}
 			// NOTE: importiere alle Spieler
@@ -58,30 +58,34 @@ export class Handler implements Renderer, Drawer {
 			})
 
 			// NOTE: Das kannst du machen, entweder du machst es wie ich oben, oder du fügst
-
-			// TODO: importiere die Global Friction
 			// NOTE: die Sachen die aktuell keine direkte Implementation haben, brauchen auch keine Implentation hier,
 			// weil es sich das Interface noch ändern kann
+			// TODO: importiere die Global Friction
 			settings.friction
 			// TODO: importiere die item-Settings 
 			settings.items
 			// TODO: importiere die Hintergründe
 			// NOTE: dies wäre für dich eine einfache Übung, es komplett zu implementieren
+			// das ist temporär da, solange die implementierung fehlt, wenn diese da ist muss das "@ts-ignore" weg
 			if (settings.background?.type === "color") {
+				//@ts-ignore
 				this.background = new BackgroundColor(settings.background.color)
 			}
 
-			// TODO: importiere die Effekte 
+			// TODO: importiere die Effekte
 			settings.effects
 		}
 		)
 	}
+	// NOTE: stable
 	addStructure(structure: Structure) {
 		this.structures.push(structure)
 	}
+	// NOTE: stable
 	addEntity(entity: IEntity) {
 		this.entitys.push(entity)
 	}
+	// NOTE: stable
 	draw(ctx: RenderContext) {
 		ctx.clear("white")
 		this.background.draw(ctx)
@@ -92,6 +96,7 @@ export class Handler implements Renderer, Drawer {
 			entity.draw(ctx)
 		}
 	}
+	// NOTE: stable
 	render(deltatime: number) {
 		const queue = [...this.entitys, ...this.structures];
 		for (const _entity of queue) {
@@ -102,7 +107,7 @@ export class Handler implements Renderer, Drawer {
 			entity.render(deltatime)
 		}
 	}
-
+	// TODO: 
 	handleEntityCollision(entityA: IPhysics, entityB: IPhysics) {
 		switch (true) {
 			case (entityA.shape == "circle" && entityB.shape == "rectangle"): {

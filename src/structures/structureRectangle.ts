@@ -1,7 +1,7 @@
 import type { RenderContext } from "../engine/RenderContext"
-import type { Structure } from "./structures"
+import type { IStructure } from "./structures"
 
-export class StructureRectangle implements Structure {
+export class StructureRectangle implements IStructure {
 	x: number
 	y: number
 	w: number
