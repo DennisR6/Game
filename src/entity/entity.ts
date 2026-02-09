@@ -7,7 +7,7 @@ export interface IEntity extends Drawer, Renderer, IPhysicsCircle {
 
 export class Player implements IEntity {
 	position: Vector2D
-	team: number;
+	team: string;
 	color: string;
 	playericon: string;
 	id: number;
@@ -15,7 +15,7 @@ export class Player implements IEntity {
 	velocity: Vector2D;
 	bouncyness: number;
 	friction: number;
-	constructor(x: number, y: number, team: number, color: string, playericon: string, id?: number) {
+	constructor(x: number, y: number, team: string, color: string, playericon: string, id?: number) {
 		this.position = { x, y }
 		this.team = team
 		this.color = color

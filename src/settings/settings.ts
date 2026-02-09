@@ -55,7 +55,7 @@ export interface Entity {
 	x: number;
 	y: number;
 	color: string;
-	team: number;
+	team: string;
 	playericon: string;
 }
 
@@ -85,8 +85,8 @@ export default {
 		{ type: "circle", x: 700, y: 500, r: 30, color: "red" },
 	],
 	players: [
-		{ x: 300, y: 300, color: "green", playericon: "", team: 0 },
-		{ x: 600, y: 300, color: "red", playericon: "", team: 1 },
+		{ x: 300, y: 300, color: "green", playericon: "", team: "0" },
+		{ x: 600, y: 300, color: "red", playericon: "", team: "1" },
 	],
 	friction: 0.05,
 	items: [],

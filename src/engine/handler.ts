@@ -1,4 +1,4 @@
-import type { Settings } from "../settings/setttings";
+import type { Settings } from "../settings/settings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
