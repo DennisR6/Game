@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Slipstrike Map Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Slipstrike Map Editor</h1>
+
+<section>
+    <h2>Screen Resolution</h2>
+    <label>X: <input id="resX" type="number"></label>
+    <label>Y: <input id="resY" type="number"></label>
+    <label>Factor: <input id="resFactor" type="number"></label>
+</section>
+
+<section>
+    <h2>Wände (6 Stück)</h2>
+    <div id="wallList"></div>
+</section>
+
+<section>
+    <h2>Löcher / Todeszonen (6 Stück)</h2>
+    <div id="holeList"></div>
+</section>
+
+<section>
+    <h2>Players</h2>
+    <div id="playerList"></div>
+    <button onclick="addPlayer()">+ Player</button>
+</section>
+
+<section>
+    <h2>Friction</h2>
+    <input id="friction" type="number" step="0.01">
+</section>
+
+<section>
+    <h2>Background</h2>
+    <select id="bgType" onchange="onBackgroundTypeChange()">
+        <option value="color">Color</option>
+        <option value="image">Image URL</option>
+    </select>
+    <input id="bgValue" type="text" oninput="validateBackgroundInput()">
+    <div id="bgError" style="color:red; font-size:14px; margin-top:5px;"></div>
+</section>
+
+<button onclick="exportJSON()">JSON Exportieren</button>
+<button onclick="copyJSON()">Kopieren</button>
+
+<textarea id="output" rows="20" style="width:100%; margin-top:20px;"></textarea>
+
+<script src="app.js"></script>
+</body>
+</html>
