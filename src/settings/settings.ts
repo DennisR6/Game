@@ -88,9 +88,7 @@ export default {
 		{ x: 300, y: 300, color: "green", playericon: "", team: "0" },
 		{ x: 600, y: 300, color: "red", playericon: "", team: "1" },
 	],
-	friction: 0.05,
+	friction: 0.95,
 	items: [],
 	background: { type: "color", color: "blue" },
-	// background: { type: "image", url: "blue" },
-
 } as Settings

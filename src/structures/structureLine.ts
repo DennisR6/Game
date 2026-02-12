@@ -11,6 +11,7 @@ export class StructureLine implements IStructure, IPhysicsRectangle {
 	shape: "rectangle"
 	vel: Vector2D
 	bounce: number
+	inetia: number = 9000
 	constructor(x: number, y: number, x2: number, y2: number, color: string) {
 		this.x = x
 		this.x2 = x2
@@ -39,5 +40,15 @@ export class StructureLine implements IStructure, IPhysicsRectangle {
 	}
 	onCollision(_impact: { newPos: Vector2D; newVel: Vector2D }): void {
 		// NOTE: Do Noting - see StructureCircle
+	}
+
+	setVel(_vel: Vector2D): void {
+		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	}
+	setInertia(_inertia: number): void {
+		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	}
+	getInertia(): number {
+		return this.inetia
 	}
 }

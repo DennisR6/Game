@@ -2,7 +2,7 @@ import type { Settings } from "../settings/settings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
-import { defaultPhysics, type IPhysics, type PhysicsStrategy } from "../physics/physics";
+import { defaultPhysics, type PhysicsStrategy } from "../physics/physics";
 import { BackgroundColor, BackgroundImage, type IBackground } from "../background/background";
 
 
@@ -19,10 +19,12 @@ export class Handler implements Renderer, Drawer {
 		this.friction = 1
 		if (settings?.background?.type === "color") {
 			this.background = new BackgroundColor(settings.background.color)
+		} else {
+			this.background = new BackgroundColor("green")
 		}
 		if (settings != undefined) {
 			this.importSettings(settings)
-		} this.background = new BackgroundColor("green")
+		}
 	}
 
 	// TODO:
@@ -50,33 +52,32 @@ export class Handler implements Renderer, Drawer {
 					console.log(`${(e as any).type} is not Implemented yet.`)
 					return
 			}
-			// NOTE: importiere alle Spieler
-			settings.players?.forEach((player, id) => {
-				const { x, y, team, color, playericon } = player
-				this.entitys.push(new Player(x, y, team, color, playericon, id))
-			})
+		})
+		// NOTE: importiere alle Spieler
+		settings.players?.forEach((player, id) => {
+			const { x, y, team, color, playericon } = player
+			this.entitys.push(new Player(x, y, team, color, playericon, id))
+		})
 
-			// NOTE: Das kannst du machen, entweder du machst es wie ich oben, oder du fügst
-			// NOTE: die Sachen die aktuell keine direkte Implementation haben, brauchen auch keine Implentation hier,
-			// weil es sich das Interface noch ändern kann
-			// TODO: importiere die Global Friction
-			this.friction = settings.friction!
-			// TODO: importiere die item-Settings 
-			settings.items
-			// TODO: importiere die Hintergründe
-			// NOTE: dies wäre für dich eine einfache Übung, es komplett zu implementieren
-			// das ist temporär da, solange die implementierung fehlt, wenn diese da ist muss das "@ts-ignore" weg
-			if (settings.background?.type === "color") {
-				//@ts-ignore
-				this.background = new BackgroundColor(settings.background.color)
-			} else if (settings.background?.type === "image") {
-				this.background = new BackgroundImage(settings.background.url)
-			}
-
-			// TODO: importiere die Effekte
-			settings.effects
+		// NOTE: Das kannst du machen, entweder du machst es wie ich oben, oder du fügst
+		// NOTE: die Sachen die aktuell keine direkte Implementation haben, brauchen auch keine Implentation hier,
+		// weil es sich das Interface noch ändern kann
+		// TODO: importiere die Global Friction
+		this.friction = settings.friction!
+		// TODO: importiere die item-Settings 
+		settings.items
+		// TODO: importiere die Hintergründe
+		// NOTE: dies wäre für dich eine einfache Übung, es komplett zu implementieren
+		// das ist temporär da, solange die implementierung fehlt, wenn diese da ist muss das "@ts-ignore" weg
+		if (settings.background?.type === "color") {
+			//@ts-ignore
+			this.background = new BackgroundColor(settings.background.color)
+		} else if (settings.background?.type === "image") {
+			this.background = new BackgroundImage(settings.background.url)
 		}
-		)
+
+		// TODO: importiere die Effekte
+		settings.effects
 	}
 	// NOTE: stable
 	addStructure(structure: Structure) {
@@ -105,18 +106,13 @@ export class Handler implements Renderer, Drawer {
 				const entity = queue[i];
 				const entity2 = queue[j];
 
-
-				if (this.physics.dist(entity.getPos(), entity2.getPos())) {
-					// TODO: Kollision behandeln
+				if (this.physics.checkCollision(entity, entity2)) {
+					this.physics.handleCollision(entity, entity2)
 				}
 			}
 		}
 		for (const entity of this.entitys) {
 			entity.render(deltatime)
 		}
-	}
-	// TODO: 
-	handleEntityCollision(_entityA: IPhysics, _entityB: IPhysics) {
-		// this.physics.intersect(entityA, entityB)
 	}
 }

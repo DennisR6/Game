@@ -1,4 +1,4 @@
-import type { PhysicsStrategy, Vector2D } from "./physics";
+import type { IPhysics, IPhysicsCircle, IPhysicsRectangle, PhysicsStrategy, Vector2D } from "./physics";
 export class defaultPhysics implements PhysicsStrategy {
 	calculateBounce(vel: Vector2D, normal: Vector2D): Vector2D {
 		const n = this.normalize(normal)
@@ -40,24 +40,60 @@ export class defaultPhysics implements PhysicsStrategy {
 	clamp(val: number, min: number, max: number): number {
 		return Math.max(min, Math.min(max, val))
 	}
-
-	checkCollisionCircles(pos1: Vector2D, r1: number, pos2: Vector2D, r2: number): boolean {
-		const d2 = this.distSq(pos1, pos2);
-		const rSum = r1 + r2;
+	checkCollision(entityA: IPhysics, entityB: IPhysics): boolean {
+		switch (true) {
+			case entityA.shape == "circle" && entityB.shape == "circle":
+				return this.checkCollisionCircles(entityA, entityB)
+			case entityA.shape == "circle" && entityB.shape == "rectangle":
+				return this.checkCollisionCircleRect(entityA, entityB)
+			case entityA.shape == "rectangle" && entityB.shape == "rectangle":
+				return this.checkCollisionRects(entityA, entityB)
+		}
+		return false
+	}
+	checkCollisionCircles(entityA: IPhysicsCircle, entityB: IPhysicsCircle): boolean {
+		const d2 = this.distSq(entityA.getPos(), entityB.getPos());
+		const rSum = entityA.getBounds().radius + entityB.getBounds().radius;
 		return d2 <= (rSum * rSum);
 	}
-	checkCollisionRects(pos1: Vector2D, w1: number, h1: number, pos2: Vector2D, w2: number, h2: number): boolean {
-		return pos1.x <= pos2.x + w2 &&
-			pos1.x + w1 >= pos2.x &&
-			pos1.y <= pos2.y + h2 &&
-			pos1.y + h1 >= pos2.y;
+	checkCollisionRects(entityA: IPhysicsRectangle, entityB: IPhysicsRectangle): boolean {
+		const { x: Ax, y: Ay } = entityA.getPos()
+		const { x: Bx, y: By } = entityB.getPos()
+		return Ax <= Bx + entityB.getBounds().width &&
+			Ax + entityA.getBounds().width >= Bx &&
+			Ay <= By + entityB.getBounds().height &&
+			Ay + entityA.getBounds().height >= By;
 	}
-	checkCollisionCircleRect(circlePos: Vector2D, r: number, rectPos: Vector2D, w: number, h: number): boolean {
+	checkCollisionCircleRect(entityA: IPhysicsCircle, entityB: IPhysicsRectangle): boolean {
+		const { x: Ax, y: Ay } = entityA.getPos()
+		const { x: Bx, y: By } = entityB.getPos()
 		const closest = {
-			x: this.clamp(circlePos.x, rectPos.x, rectPos.x + w),
-			y: this.clamp(circlePos.y, rectPos.y, rectPos.y + h)
+			x: this.clamp(Ax, Bx, Bx + entityB.getBounds().width),
+			y: this.clamp(Ay, By, By + entityB.getBounds().height)
 		};
-		const d2 = this.distSq(circlePos, closest);
-		return d2 <= (r * r);
+		const d2 = this.distSq(entityA.getPos(), closest);
+		return d2 <= (entityA.getBounds().radius * entityA.getBounds().radius);
+	}
+	handleCollision(entityA: IPhysics, entityB: IPhysics): void {
+		// NOTE: extremly naive implementation!
+		// Stays put if you collide with a wall
+		const { x: Ax, y: Ay } = entityA.getPos()
+		const { x: Bx, y: By } = entityB.getVelocity()
+
+		switch (true) {
+			case (entityA.shape === "circle" && entityB.shape === "circle"): {
+				const dx = (Ax + entityA.getBounds().radius) - (Bx + entityB.getBounds().radius);
+				const dy = (Ay + entityA.getBounds().radius) - (By + entityB.getBounds().radius);
+
+				entityA.setVel({ x: -dx, y: -dy })
+				entityB.setVel({ x: dx, y: dy })
+				break
+			}
+			case (entityA.shape === "rectangle" && entityB.shape === "circle"):
+			case (entityA.shape === "circle" && entityB.shape === "rectangle"): {
+				entityA.setVel({ x: 0, y: 0 })
+				entityB.setVel({ x: 0, y: 0 })
+			}
+		}
 	}
 }

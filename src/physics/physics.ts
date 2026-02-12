@@ -16,26 +16,32 @@ export interface PhysicsStrategy {
 	distSq(a: Vector2D, b: Vector2D): number;
 	clamp(val: number, min: number, max: number): number
 	//Collisions
-	checkCollisionCircles(pos1: Vector2D, r1: number, pos2: Vector2D, r2: number): boolean;
-	checkCollisionRects(pos1: Vector2D, w1: number, h1: number, pos2: Vector2D, w2: number, h2: number): boolean;
-	checkCollisionCircleRect(circlePos: Vector2D, r: number, rectPos: Vector2D, w: number, h: number): boolean;
+	checkCollisionCircles(entityA: IPhysicsCircle, entityB: IPhysicsCircle): boolean;
+	checkCollisionRects(entityA: IPhysicsRectangle, entityB: IPhysicsRectangle): boolean;
+	checkCollision(entityA: IPhysics, entityB: IPhysics): boolean
+	checkCollisionCircleRect(entityA: IPhysicsCircle, entityB: IPhysicsRectangle): boolean;
+	handleCollision(entityA: IPhysics, entityB: IPhysics): void
 }
 export type IPhysics = IPhysicsCircle | IPhysicsRectangle
-export interface IPhysicsCircle {
-	shape: "circle"
+
+export interface IdefaultPhysics {
+	shape: string
+	setVel(vel: Vector2D): void;
+	setInertia(inertia: number): void;
+	setPos(pos: Vector2D): void
 	getPos(): Vector2D;
+	getInertia(): number
 	getVelocity(): Vector2D;
 	onCollision(impact: { newPos: Vector2D, newVel: Vector2D }): void
-	getBounds(): { radius: number }
 	getBounceFactor(): number;
 }
-export interface IPhysicsRectangle {
+export interface IPhysicsCircle extends IdefaultPhysics {
+	shape: "circle"
+	getBounds(): { radius: number }
+}
+export interface IPhysicsRectangle extends IdefaultPhysics {
 	shape: "rectangle"
-	getPos(): Vector2D;
-	getVelocity(): Vector2D;
-	onCollision(impact: { newPos: Vector2D, newVel: Vector2D }): void
 	getBounds(): { width: number, height: number }
-	getBounceFactor(): number;
 }
 
 

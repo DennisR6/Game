@@ -10,6 +10,7 @@ export class StructureCircle implements IStructure, IPhysicsCircle {
 	shape: "circle"
 	bounce: number
 	vel: Vector2D
+	inetia: number = 9000;
 	constructor(x: number, y: number, r: number, color: string) {
 		this.shape = "circle"
 		this.x = x
@@ -35,7 +36,16 @@ export class StructureCircle implements IStructure, IPhysicsCircle {
 	getVelocity(): Vector2D {
 		return this.vel
 	}
+	setVel(vel: Vector2D): void {
+		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	}
+	setInertia(_inertia: number): void {
+		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	}
 	onCollision(_impact: { newPos: Vector2D; newVel: Vector2D }): void {
 		// NOTE: This is a Wall: Do Nothing (infinite Mass)
+	}
+	getInertia(): number {
+		return this.inetia
 	}
 }

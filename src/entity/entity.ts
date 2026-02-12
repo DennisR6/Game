@@ -15,6 +15,8 @@ export class Player implements IEntity {
 	velocity: Vector2D;
 	bouncyness: number;
 	friction: number;
+	weight: number
+	inertia: number = 1;
 	constructor(x: number, y: number, team: string, color: string, playericon: string, id?: number) {
 		this.position = { x, y }
 		this.team = team
@@ -29,7 +31,8 @@ export class Player implements IEntity {
 			this.velocity = { x: 0, y: 0 } as Vector2D
 		}
 		this.bouncyness = 0.1
-		this.friction = 0.95;
+		this.friction = 1;
+		this.weight = 1
 	}
 	draw(ctx: RenderContext): void {
 		ctx.setFillColor(this.color)
@@ -37,11 +40,9 @@ export class Player implements IEntity {
 	}
 	render(deltaTime: number): void {
 		const dt = deltaTime / 1000;
-		this.position.x += this.velocity.x * dt;
-		this.position.y += this.velocity.y * dt;
+		this.position.x += this.velocity.x / this.inertia * dt;
+		this.position.y += this.velocity.y / this.inertia * dt;
 
-		// Optionale Reibung (Friction): Der Player wird mit der Zeit langsamer
-		// z.B. 5% Geschwindigkeitsverlust pro Sekunde
 		this.velocity.x *= Math.pow(this.friction, dt);
 		this.velocity.y *= Math.pow(this.friction, dt);
 	}
@@ -55,9 +56,21 @@ export class Player implements IEntity {
 		return this.velocity
 	}
 	onCollision(_impact: { newPos: Vector2D; newVel: Vector2D; }): void {
-		// TODO: needs implementation
+		// TODO: needs implementation: or maybe not?
 	}
 	getBounceFactor(): number {
 		return this.bouncyness
+	}
+	setInertia(inertia: number): void {
+		this.inertia = Math.min(inertia, 1)
+	}
+	setVel(vel: Vector2D): void {
+		this.velocity = vel
+	}
+	getInertia(): number {
+		return this.inertia
+	}
+	setPos(pos: Vector2D): void {
+		this.position = pos
 	}
 }
