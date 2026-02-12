@@ -2,7 +2,7 @@ import './style.css'
 import { P5Renderer } from "./engine/drawingEngine"
 import { Handler } from './engine/handler'
 import p5 from 'p5'
-import setttings from './settings/setttings'
+import setttings from './settings/settings'
 
 
 const handler = new Handler(setttings)
