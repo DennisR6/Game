@@ -23,16 +23,17 @@ export interface PhysicsStrategy {
 	handleCollision(entityA: IPhysics, entityB: IPhysics): void
 }
 export type IPhysics = IPhysicsCircle | IPhysicsRectangle
-
 export interface IdefaultPhysics {
 	shape: string
 	setVel(vel: Vector2D): void;
-	setInertia(inertia: number): void;
+	setMass(mass: number): void;
 	setPos(pos: Vector2D): void
 	getPos(): Vector2D;
-	getInertia(): number
+	getFriction(): number;
+	setFriction(friction: number): void;
+	getMass(): number
 	getVelocity(): Vector2D;
-	onCollision(impact: { newPos: Vector2D, newVel: Vector2D }): void
+	onCollision({ entity }: { entity: IPhysics }): void
 	getBounceFactor(): number;
 }
 export interface IPhysicsCircle extends IdefaultPhysics {

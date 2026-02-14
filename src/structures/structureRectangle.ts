@@ -1,5 +1,5 @@
 import type { RenderContext } from "../engine/RenderContext"
-import type { IPhysicsRectangle, Vector2D } from "../physics/physics"
+import type { IPhysics, IPhysicsRectangle, Vector2D } from "../physics/physics"
 import type { IStructure } from "./structures"
 
 export class StructureRectangle implements IStructure, IPhysicsRectangle {
@@ -11,7 +11,7 @@ export class StructureRectangle implements IStructure, IPhysicsRectangle {
 	shape: "rectangle"
 	vel: Vector2D
 	bounce: number
-	inetia: number = 9000
+	mass: number = 9000
 	constructor(x: number, y: number, w: number, h: number, color: string) {
 		this.x = x
 		this.y = y
@@ -38,16 +38,24 @@ export class StructureRectangle implements IStructure, IPhysicsRectangle {
 	getVelocity(): Vector2D {
 		return this.vel
 	}
-	onCollision(_impact: { newPos: Vector2D; newVel: Vector2D }): void {
-		// NOTE: Do Noting - see StructureCircle
+	onCollision({ entity }: { entity: IPhysics }): void {
+		console.log("Collision with:" + entity.shape)
 	}
-	setVel(_vel: Vector2D): void {
-		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	setVel(vel: Vector2D): void {
+		this.vel = vel
 	}
-	setInertia(_inertia: number): void {
-		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	setMass(mass: number): void {
+		this.mass = mass
 	}
-	getInertia(): number {
-		return this.inetia
+	getMass(): number {
+		return this.mass
 	}
+	setPos(pos: Vector2D): void {
+		this.x = pos.x
+		this.y = pos.y
+	}
+	getFriction(): number {
+		return 0
+	}
+	setFriction(_friction: number): void { }
 }

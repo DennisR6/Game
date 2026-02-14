@@ -4,6 +4,11 @@ export interface RenderContext {
 	drawText(text: string, x: number, y: number, fontSize?: number): void;
 	setFillColor(color: string): void;
 	setStrokeColor(color: string): void;
+	setStroke(weight: number): void;
+	rotate(deg: number): void;
+	loadImage(url: string): void;
+	drawImage(img: string, dx: number, dy: number, dWidth: number, dHeight: number, sx: number, sy: number, sWidth: number, sHeight: number): void;
+	getScreenSize(): { width: number, height: number };
 	clear(color?: string): void;
 }
 

@@ -61,34 +61,36 @@ export interface Entity {
 
 const thickness = 2
 export default {
-	screenResolution: { x: 100, y: 100, factor: 100 },
+	screenResolution: { x: 0, y: 0, factor: 100 },
 	mapBoundarys: [
 		// Rectangles
-		{ type: "rectangle", x: 160, y: 100, w: 180, h: thickness, color: "blue" },
-		{ type: "rectangle", x: 460, y: 100, w: 180, h: thickness, color: "blue" },
-		{ type: "rectangle", x: 100, y: 160, w: thickness, h: 280, color: "blue" },
-		{ type: "rectangle", x: 700, y: 160, w: thickness, h: 280, color: "blue" },
-		{ type: "rectangle", x: 160, y: 500, w: 180, h: thickness, color: "blue" },
-		{ type: "rectangle", x: 460, y: 500, w: 180, h: thickness, color: "blue" },
+		{ type: "rectangle", x: 100, y: 100, w: 1400, h: thickness, color: "blue" },
+		{ type: "rectangle", x: 100, y: 100, w: thickness, h: 700, color: "blue" },
+		{ type: "rectangle", x: 100, y: 800, w: 1400, h: thickness, color: "transparent" },
+		{ type: "rectangle", x: 1500, y: 100, w: thickness, h: 700, color: "transparent" },
+
 
 		// Circles
 		{ type: "circle", x: 100, y: 100, r: 30, color: "red" },
 		// OBEN MITTE
-		{ type: "circle", x: 400, y: 100, r: 30, color: "red" },
+		{ type: "circle", x: 800, y: 100, r: 30, color: "red" },
 		// OBEN RECHTS
-		{ type: "circle", x: 700, y: 100, r: 30, color: "red" },
+		{ type: "circle", x: 1500, y: 100, r: 30, color: "red" },
 		// UNTEN LINKS
-		{ type: "circle", x: 100, y: 500, r: 30, color: "red" },
+		{ type: "circle", x: 100, y: 800, r: 30, color: "red" },
 		// UNTEN MITTE
-		{ type: "circle", x: 400, y: 500, r: 30, color: "red" },
+		{ type: "circle", x: 800, y: 800, r: 30, color: "red" },
 		// UNTEN RECHTS
-		{ type: "circle", x: 700, y: 500, r: 30, color: "red" },
+		{ type: "circle", x: 1500, y: 800, r: 30, color: "cyan" },
+
 	],
 	players: [
-		{ x: 300, y: 300, color: "green", playericon: "", team: "0" },
+		{ x: 300, y: 305, color: "green", playericon: "", team: "0" },
 		{ x: 600, y: 300, color: "red", playericon: "", team: "1" },
 	],
-	friction: 0.95,
+	friction: 1.2,
 	items: [],
-	background: { type: "color", color: "blue" },
+	effects: [],
+	background: { type: "image", url: "/eis.png" },
+	// background: { type: "color", color: "blue" },
 } as Settings

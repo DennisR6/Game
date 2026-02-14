@@ -46,7 +46,9 @@ export class BackgroundImage implements BackgroundImage {
 		this.url = bildurl
 	}
 	render(_deltatime: number): void { }
-	draw(_ctx: RenderContext): void {
+	draw(ctx: RenderContext): void {
+		const { width, height } = ctx.getScreenSize()
+		ctx.drawImage(this.url, 0, 0, width, height, 0, 0, width, height)
 	}
 }
 

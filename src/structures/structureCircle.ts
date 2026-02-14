@@ -1,5 +1,5 @@
 import type { RenderContext } from "../engine/RenderContext"
-import type { IPhysicsCircle, Vector2D } from "../physics/physics"
+import type { IPhysics, IPhysicsCircle, Vector2D } from "../physics/physics"
 import type { IStructure } from "./structures"
 
 export class StructureCircle implements IStructure, IPhysicsCircle {
@@ -10,7 +10,7 @@ export class StructureCircle implements IStructure, IPhysicsCircle {
 	shape: "circle"
 	bounce: number
 	vel: Vector2D
-	inetia: number = 9000;
+	mass: number = 9000;
 	constructor(x: number, y: number, r: number, color: string) {
 		this.shape = "circle"
 		this.x = x
@@ -37,15 +37,24 @@ export class StructureCircle implements IStructure, IPhysicsCircle {
 		return this.vel
 	}
 	setVel(vel: Vector2D): void {
-		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+		this.vel = vel
 	}
-	setInertia(_inertia: number): void {
-		//NOTE: THIS Wall is not Moving? Maybe in a other Update?
+	setMass(mass: number): void {
+		this.mass = mass
 	}
-	onCollision(_impact: { newPos: Vector2D; newVel: Vector2D }): void {
-		// NOTE: This is a Wall: Do Nothing (infinite Mass)
+	getMass(): number {
+		return this.mass
 	}
-	getInertia(): number {
-		return this.inetia
+	setPos(pos: Vector2D): void {
+		this.x = pos.x
+		this.y = pos.y
 	}
+	onCollision({ entity }: { entity: IPhysics }): void {
+		console.log("Collision with:" + entity.shape)
+	}
+	getFriction(): number {
+		return 0
+	}
+	setFriction(_friction: number): void { }
 }
+

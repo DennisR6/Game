@@ -4,7 +4,7 @@ import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
 import { defaultPhysics, type PhysicsStrategy } from "../physics/physics";
 import { BackgroundColor, BackgroundImage, type IBackground } from "../background/background";
-
+import { type UIStrategy, DefaultUI } from "../ui/uiStrategy.ts"
 
 export class Handler implements Renderer, Drawer {
 	entitys: Array<IEntity>;
@@ -12,16 +12,33 @@ export class Handler implements Renderer, Drawer {
 	physics: PhysicsStrategy
 	background: IBackground
 	friction: number
+	ui: UIStrategy
 	constructor(settings?: Settings) {
 		this.entitys = [];
 		this.structures = [];
 		this.physics = new defaultPhysics()
 		this.friction = 1
-		if (settings?.background?.type === "color") {
-			this.background = new BackgroundColor(settings.background.color)
-		} else {
-			this.background = new BackgroundColor("green")
+		this.ui = new DefaultUI(
+			settings?.screenResolution.factor! * 16 / 6 * 2.5,
+			settings?.screenResolution.factor! * 9 / 6 * 5,
+			50,
+			50,
+			10,
+			5
+		)
+		switch (settings?.background!.type) {
+			case "color": {
+				this.background = new BackgroundColor(settings.background.color)
+				break
+			}
+			case "image": {
+				this.background = new BackgroundImage(settings.background.url)
+				break
+			}
+			default:
+				this.background = new BackgroundColor("green")
 		}
+
 		if (settings != undefined) {
 			this.importSettings(settings)
 		}
@@ -58,23 +75,11 @@ export class Handler implements Renderer, Drawer {
 			const { x, y, team, color, playericon } = player
 			this.entitys.push(new Player(x, y, team, color, playericon, id))
 		})
+		this.friction = settings.friction!;
+		(new Array().concat(this.entitys, this.structures)).forEach((item: IEntity) => item.setFriction(settings.friction || 0.95))
 
-		// NOTE: Das kannst du machen, entweder du machst es wie ich oben, oder du fügst
-		// NOTE: die Sachen die aktuell keine direkte Implementation haben, brauchen auch keine Implentation hier,
-		// weil es sich das Interface noch ändern kann
-		// TODO: importiere die Global Friction
-		this.friction = settings.friction!
 		// TODO: importiere die item-Settings 
 		settings.items
-		// TODO: importiere die Hintergründe
-		// NOTE: dies wäre für dich eine einfache Übung, es komplett zu implementieren
-		// das ist temporär da, solange die implementierung fehlt, wenn diese da ist muss das "@ts-ignore" weg
-		if (settings.background?.type === "color") {
-			//@ts-ignore
-			this.background = new BackgroundColor(settings.background.color)
-		} else if (settings.background?.type === "image") {
-			this.background = new BackgroundImage(settings.background.url)
-		}
 
 		// TODO: importiere die Effekte
 		settings.effects
@@ -97,20 +102,28 @@ export class Handler implements Renderer, Drawer {
 		for (const entity of this.entitys) {
 			entity.draw(ctx)
 		}
+		this.ui.draw(ctx)
 	}
 	// NOTE: stable
 	render(deltatime: number) {
-		const queue = [...this.entitys, ...this.structures];
-		for (let i = 0; i < queue.length; i++) {
-			for (let j = i + 1; j < queue.length; j++) {
-				const entity = queue[i];
-				const entity2 = queue[j];
-
-				if (this.physics.checkCollision(entity, entity2)) {
-					this.physics.handleCollision(entity, entity2)
+		for (let i = 0; i < this.entitys.length; i++) {
+			for (let j = i + 1; j < this.entitys.length; j++) {
+				const e1 = this.entitys[i];
+				const e2 = this.entitys[j];
+				if (this.physics.checkCollision(e1, e2)) {
+					this.physics.handleCollision(e1, e2);
 				}
 			}
 		}
+
+		for (const entity of this.entitys) {
+			for (const struct of this.structures) {
+				if (this.physics.checkCollision(entity, struct)) {
+					this.physics.handleCollision(entity, struct);
+				}
+			}
+		}
+
 		for (const entity of this.entitys) {
 			entity.render(deltatime)
 		}

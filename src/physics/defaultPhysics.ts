@@ -44,6 +44,8 @@ export class defaultPhysics implements PhysicsStrategy {
 		switch (true) {
 			case entityA.shape == "circle" && entityB.shape == "circle":
 				return this.checkCollisionCircles(entityA, entityB)
+			case entityA.shape == "rectangle" && entityB.shape == "circle":
+				return this.checkCollisionCircleRect(entityB, entityA)
 			case entityA.shape == "circle" && entityB.shape == "rectangle":
 				return this.checkCollisionCircleRect(entityA, entityB)
 			case entityA.shape == "rectangle" && entityB.shape == "rectangle":
@@ -75,24 +77,107 @@ export class defaultPhysics implements PhysicsStrategy {
 		return d2 <= (entityA.getBounds().radius * entityA.getBounds().radius);
 	}
 	handleCollision(entityA: IPhysics, entityB: IPhysics): void {
-		// NOTE: extremly naive implementation!
-		// Stays put if you collide with a wall
-		const { x: Ax, y: Ay } = entityA.getPos()
-		const { x: Bx, y: By } = entityB.getVelocity()
+		const posA = entityA.getPos();
+		const posB = entityB.getPos();
+		const dist = this.dist(posA, posB);
 
 		switch (true) {
 			case (entityA.shape === "circle" && entityB.shape === "circle"): {
-				const dx = (Ax + entityA.getBounds().radius) - (Bx + entityB.getBounds().radius);
-				const dy = (Ay + entityA.getBounds().radius) - (By + entityB.getBounds().radius);
+				const radiusA = entityA.getBounds().radius;
+				const radiusB = entityB.getBounds().radius;
 
-				entityA.setVel({ x: -dx, y: -dy })
-				entityB.setVel({ x: dx, y: dy })
+
+				if (dist < radiusA + radiusB) {
+					// 1. Kollisions-Normale (Wohin zeigt der Aufprall?)
+					const nx = (posB.x - posA.x) / dist;
+					const ny = (posB.y - posA.y) / dist;
+
+					// 2. Relative Geschwindigkeit
+					const velA = entityA.getVelocity();
+					const velB = entityB.getVelocity();
+					const relVelX = velB.x - velA.x;
+					const relVelY = velB.y - velA.y;
+
+					// 3. Wie stark prallen sie ab? (Skalarprodukt)
+					const dotProduct = relVelX * nx + relVelY * ny;
+
+					// Verhindern, dass sie zusammenkleben, wenn sie sich bereits voneinander entfernen
+					if (dotProduct > 0) return;
+
+					// 4. Impuls berechnen (vereinfacht ohne Masse für den Anfang)
+					const restitution = Math.min(entityA.getBounceFactor(), entityB.getBounceFactor());
+					const impulseMag = -(1 + restitution) * dotProduct;
+
+					// Hier kommt deine Inertia (Masse) ins Spiel!
+					const invMassA = 1 / entityA.getMass();
+					const invMassB = 1 / entityB.getMass();
+
+					// 5. Neue Geschwindigkeiten setzen
+					entityA.setVel({
+						x: velA.x - (impulseMag * nx * invMassA),
+						y: velA.y - (impulseMag * ny * invMassA)
+					});
+					entityB.setVel({
+						x: velB.x + (impulseMag * nx * invMassB),
+						y: velB.y + (impulseMag * ny * invMassB)
+					});
+				}
 				break
 			}
-			case (entityA.shape === "rectangle" && entityB.shape === "circle"):
-			case (entityA.shape === "circle" && entityB.shape === "rectangle"): {
-				entityA.setVel({ x: 0, y: 0 })
-				entityB.setVel({ x: 0, y: 0 })
+			case (entityA.shape === "rectangle" && entityB.shape === "rectangle"): {
+				// 2 Rectangles
+				break
+			}
+			case (entityA.shape === "circle" && entityB.shape === "rectangle"):
+			case (entityA.shape === "rectangle" && entityB.shape === "circle"): {
+				const circle = (entityA.shape === "circle" ? entityA : entityB) as IPhysicsCircle
+				const rectangle = (entityA.shape === "rectangle" ? entityA : entityB) as IPhysicsRectangle
+				const cPos = circle.getPos();
+				const rPos = rectangle.getPos();
+				const rBounds = rectangle.getBounds();
+				const radius = circle.getBounds().radius;
+
+				const closestX = Math.max(rPos.x, Math.min(cPos.x, rPos.x + rBounds.width));
+				const closestY = Math.max(rPos.y, Math.min(cPos.y, rPos.y + rBounds.height));
+
+				const dx = cPos.x - closestX;
+				const dy = cPos.y - closestY;
+				const distanceSq = dx * dx + dy * dy;
+
+				if (distanceSq < radius * radius) {
+					const distance = Math.sqrt(distanceSq);
+
+					const nx = distance > 0 ? dx / distance : 0;
+					const ny = distance > 0 ? dy / distance : -1;
+
+					const overlap = radius - distance;
+					circle.setPos({
+						x: cPos.x + nx * (overlap + 0.01), // Schiebt ihn minimal weiter raus
+						y: cPos.y + ny * (overlap + 0.01)
+					});
+
+					const vel = circle.getVelocity();
+
+					const dot = vel.x * nx + vel.y * ny;
+
+					if (dot < 0) {
+						const bounce = circle.getBounceFactor();
+
+						// Formel für Reflexion: v_neu = v_alt - (1 + bounce) * (v_alt · n) * n
+						circle.setVel({
+							x: vel.x - (1 + bounce) * dot * nx,
+							y: vel.y - (1 + bounce) * dot * ny
+						});
+					}
+
+					circle.setPos(circle.getPos())
+					circle.setVel(circle.getVelocity())
+					rectangle.setPos(rectangle.getPos())
+					rectangle.setVel(rectangle.getVelocity())
+
+					circle.onCollision({ entity: rectangle })
+					rectangle.onCollision({ entity: circle })
+				}
 			}
 		}
 	}
