@@ -1,0 +1,112 @@
+/* HEADER 1 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-panel);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--bg-border);
+}
+
+.header button {
+    background: #333;
+    color: var(--text-light);
+    border: none;
+    padding: 6px 12px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.header button:hover {
+    background: #444;
+}
+
+/* HEADER 2 */
+.header-secondary {
+    display: flex;
+    align-items: center;
+    background: var(--bg-panel);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--bg-border);
+    gap: 20px;
+}
+
+#btn-new-map {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+#btn-new-map:hover {
+    background: var(--accent-hover);
+}
+
+.map-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex: 1;
+    padding-bottom: 5px;
+}
+
+.map-card {
+    background: #222;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid var(--bg-border);
+}
+
+.map-card:hover {
+    background: #333;
+}
+
+/* MAIN LAYOUT */
+.layout {
+    display: grid;
+    grid-template-columns: 220px 1fr 400px;
+    height: calc(100vh - 120px);
+}
+
+/* SIDEBAR */
+.sidebar {
+    background: var(--bg-panel-light);
+    border-right: 1px solid var(--bg-border);
+    padding: var(--padding);
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 8px 0;
+    cursor: pointer;
+    color: var(--text-mid);
+}
+
+.sidebar li:hover {
+    color: var(--text-light);
+}
+
+.sidebar li.active {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* EDITOR AREA */
+.editor {
+    padding: var(--padding);
+    overflow-y: auto;
+}

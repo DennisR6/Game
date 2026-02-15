@@ -1,0 +1,23 @@
+:root {
+    --bg-dark: #111;
+    --bg-panel: #1a1a1a;
+    --bg-panel-light: #141414;
+    --bg-border: #333;
+
+    --text-light: #eee;
+    --text-mid: #ccc;
+    --text-dim: #888;
+
+    --accent: #4da3ff;
+    --accent-hover: #6bb4ff;
+
+    --radius: 4px;
+    --padding: 20px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-light);
+}

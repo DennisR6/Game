@@ -1,0 +1,32 @@
+.preview {
+    background: var(--bg-panel-light);
+    border-left: 1px solid var(--bg-border);
+    padding: var(--padding);
+    display: flex;
+    flex-direction: column;
+}
+
+.preview h2 {
+    margin-top: 0;
+}
+
+#btn-preview-popup {
+    background: #333;
+    color: var(--text-light);
+    border: none;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+#btn-preview-popup:hover {
+    background: #444;
+}
+
+#preview-canvas {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--bg-border);
+    border-radius: var(--radius);
+}

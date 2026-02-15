@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Slipstrike Editor</title>
+
+    <!-- CSS MODULES -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/preview.css">
+</head>
+<body>
+
+    <!-- HEADER 1 -->
+    <header class="header">
+        <div class="header-left">
+            <button id="btn-back">← Zurück</button>
+            <button id="btn-forward">Vor →</button>
+        </div>
+
+        <div class="header-center">
+            <button id="btn-download">JSON herunterladen</button>
+            <button id="btn-temp-save">Temporär speichern</button>
+        </div>
+
+        <div class="header-right">
+            <input type="file" id="file-import" accept=".json" hidden>
+            <button id="btn-import">Map laden</button>
+        </div>
+    </header>
+
+    <!-- HEADER 2 -->
+    <header class="header-secondary">
+        <button id="btn-new-map">+ NEW MAP</button>
+        <div class="map-list" id="map-list"></div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h2>Editor</h2>
+            <ul>
+                <li data-target="editor-map">Map</li>
+                <li data-target="editor-items">Items</li>
+                <li data-target="editor-hazards">Hazards</li>
+                <li data-target="editor-modes">Modi</li>
+                <li data-target="editor-ai">AI Parameter</li>
+            </ul>
+        </nav>
+
+        <!-- EDITOR AREA -->
+        <main class="editor">
+
+            <!-- MAP EDITOR -->
+            <div id="editor-map" class="editor-section active">
+                <h2>Map Einstellungen</h2>
+
+                <div class="editor-row">
+
+                    <div class="field-small">
+                        <label for="map-name">Map Name</label>
+                        <input type="text" id="map-name">
+                    </div>
+
+                    <div class="field-small">
+                        <label for="map-image">Hintergrundbild</label>
+                        <input type="file" id="map-image" accept="image/*">
+                    </div>
+
+                </div>
+
+
+                <div class="editor-block">
+                    <label>Wände</label>
+                    <button id="toggle-walls" class="toggle-grid-btn">Wände ein/ausblenden</button>
+                    <button id="btn-add-wall">+ Wand hinzufügen</button>
+                    <div id="wall-list"></div>
+                </div>
+
+                <div class="editor-block">
+                    <label>Löcher (max 6)</label>
+                    <button id="toggle-holes" class="toggle-grid-btn">Löcher ein/ausblenden</button>
+                    <button id="btn-add-hole">+ Loch hinzufügen</button>
+                    <div id="hole-list"></div>
+                </div>
+
+                <div class="editor-row">
+
+                <div class="field-small">
+                    <label>Reibung: <span id="friction-value">1.00</span></label>
+                    <input type="range" id="map-friction" min="0" max="5" step="0.01" value="1.00">
+                </div>
+
+                <div class="field-small">
+                    <label>Drift: <span id="drift-value">0.00</span></label>
+                    <input type="range" id="map-drift" min="0" max="5" step="0.01" value="0.00">
+                </div>
+
+                </div>
+
+
+                <div class="editor-block">
+                    <label>Spieler</label>
+                    <button id="toggle-players" class="toggle-grid-btn">Spieler ein/ausblenden
+                    <button id="btn-add-player">+ Spieler hinzufügen</button>
+                    <div id="player-list"></div>
+                </div>
+            </div>
+
+            <!-- OTHER EDITORS -->
+            <div id="editor-items" class="editor-section"><h2>Items</h2></div>
+            <div id="editor-hazards" class="editor-section"><h2>Hazards</h2></div>
+            <div id="editor-modes" class="editor-section"><h2>Modi</h2></div>
+            <div id="editor-ai" class="editor-section"><h2>AI Parameter</h2></div>
+
+        </main>
+
+        <!-- PREVIEW -->
+        <aside class="preview">
+            <h2>Vorschau</h2>
+            <button id="btn-preview-popup">Preview in Popup öffnen</button>
+            <div id="preview-canvas"></div>
+        </aside>
+
+    </div>
+
+    <!-- JS MODULES -->
+    <script type="module" src="js/main.js"></script>
+
+
+</body>
+</html>

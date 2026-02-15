@@ -1,0 +1,229 @@
+.editor-section {
+    display: none;
+}
+
+.editor-section.active {
+    display: block;
+}
+
+.editor-block {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-block label {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+}
+
+.editor-block input[type="text"],
+.editor-block input[type="file"],
+.editor-block input[type="number"] {
+    padding: 8px;
+    background: #222;
+    border: 1px solid var(--bg-border);
+    color: var(--text-light);
+    border-radius: var(--radius);
+}
+
+/* BUTTONS INSIDE EDITOR */
+.editor-block button {
+    margin-top: 6px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.editor-block button:hover {
+    background: var(--accent-hover);
+}
+
+/* LIST CONTAINERS */
+#wall-list,
+#hole-list,
+#player-list {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--bg-panel-light);
+    border: 1px solid var(--bg-border);
+    border-radius: var(--radius);
+}
+
+/* SLIDER */
+input[type="range"] {
+    width: 100%;
+    margin-top: 6px;
+    appearance: none;
+    height: 6px;
+    background: #333;
+    border-radius: var(--radius);
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.editor-block label span {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* --------------------------------------------- */
+/* DEINE ALTEN WAND/LOCH-BLOCKS (bleiben drin!) */
+/* --------------------------------------------- */
+
+.wall-block, .hole-block {
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+}
+
+.wall-block h4,
+.hole-block h4 {
+    margin: 0 0 10px 0;
+}
+
+.wall-block label,
+.hole-block label {
+    margin-top: 10px;
+}
+
+/* --------------------------------------------- */
+/* NEU: RESPONSIVE GRID FÜR WÄNDE & LÖCHER       */
+/* --------------------------------------------- */
+
+/* GRID für Wände & Löcher */
+.editor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Einzelne Felder */
+.field {
+    display: flex;
+    flex-direction: column;
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.field label {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    color: var(--text-mid);
+}
+
+.field input[type="range"],
+.field input[type="color"] {
+    width: 100%;
+}
+
+/* Toggle Button */
+.toggle-grid-btn {
+    margin-bottom: 10px;
+    background: #333;
+    color: var(--text-light);
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.toggle-grid-btn:hover {
+    background: #444;
+}
+
+/* Verstecken */
+.grid-hidden {
+    display: none !important;
+}
+
+/* PLAYER GRID */
+.player-field {
+    display: flex;
+    flex-direction: column;
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.player-field label {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    color: var(--text-mid);
+}
+
+.player-field input[type="range"],
+.player-field input[type="color"],
+.player-field select {
+    width: 100%;
+}
+
+.delete-player {
+    margin-top: 10px;
+    background: #aa3333;
+    border: none;
+    padding: 6px 10px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-player:hover {
+    background: #cc4444;
+}
+
+/* Kompakte 2er- oder 3er-Reihen für Map-Settings */
+.editor-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.editor-row .field-small {
+    display: flex;
+    flex-direction: column;
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.editor-row .field-small label {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    color: var(--text-mid);
+}
+
+.editor-row .field-small input[type="text"],
+.editor-row .field-small input[type="file"],
+.editor-row .field-small input[type="range"] {
+    width: 100%;
+}
+
+
