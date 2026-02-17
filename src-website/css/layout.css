@@ -69,7 +69,7 @@
 /* MAIN LAYOUT */
 .layout {
     display: grid;
-    grid-template-columns: 220px 1fr 400px;
+    grid-template-columns: 220px 1fr 1fr;
     height: calc(100vh - 120px);
 }
 
@@ -105,8 +105,54 @@
     font-weight: bold;
 }
 
-/* EDITOR AREA */
-.editor {
-    padding: var(--padding);
-    overflow-y: auto;
+/* --------------------------------------------- */
+/* 🔥 NEUE REGELN FÜR ITEMS & HAZARDS IN SIDEBAR */
+/* --------------------------------------------- */
+
+/* Unterlisten (Items, Hazards) */
+.sidebar-sub {
+    list-style: none;
+    padding-left: 12px;
+    margin: 4px 0 10px 0;
+}
+
+/* Einträge in Unterlisten */
+.sidebar-sub li {
+    padding: 6px 10px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    color: var(--text-mid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-sub li:hover {
+    background: #2a2a2a;
+    color: var(--text-light);
+}
+
+/* Aktives Item/Hazard: linker farbiger Balken */
+.sidebar-sub li.active {
+    border-left: 4px solid var(--accent);
+    background: #1f1f1f;
+    color: var(--text-light);
+}
+
+/* Add-Buttons unter Items & Hazards */
+.sidebar-add-btn {
+    width: 100%;
+    padding: 6px 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: var(--text-mid);
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.sidebar-add-btn:hover {
+    background: #3a3a3a;
+    color: var(--text-light);
 }

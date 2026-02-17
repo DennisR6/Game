@@ -42,12 +42,28 @@
         <!-- SIDEBAR -->
         <nav class="sidebar">
             <h2>Editor</h2>
-            <ul>
+
+            <ul class="sidebar-main">
+
+                <!-- MAP -->
                 <li data-target="editor-map">Map</li>
-                <li data-target="editor-items">Items</li>
-                <li data-target="editor-hazards">Hazards</li>
+
+                <!-- ITEMS -->
+                <li data-target="editor-items" class="has-sub">Items</li>
+                <ul id="sidebar-item-list" class="sidebar-sub"></ul>
+                <button id="btn-add-item" class="sidebar-add-btn">+ Neues Item</button>
+
+                <!-- HAZARDS -->
+                <li data-target="editor-hazards" class="has-sub">Hazards</li>
+                <ul id="sidebar-hazard-list" class="sidebar-sub"></ul>
+                <button id="btn-add-hazard" class="sidebar-add-btn">+ Neuer Hazard</button>
+
+                <!-- MODES -->
                 <li data-target="editor-modes">Modi</li>
+
+                <!-- AI -->
                 <li data-target="editor-ai">AI Parameter</li>
+
             </ul>
         </nav>
 
@@ -59,7 +75,6 @@
                 <h2>Map Einstellungen</h2>
 
                 <div class="editor-row">
-
                     <div class="field-small">
                         <label for="map-name">Map Name</label>
                         <input type="text" id="map-name">
@@ -69,49 +84,177 @@
                         <label for="map-image">Hintergrundbild</label>
                         <input type="file" id="map-image" accept="image/*">
                     </div>
-
                 </div>
-
 
                 <div class="editor-block">
                     <label>Wände</label>
-                    <button id="toggle-walls" class="toggle-grid-btn">Wände ein/ausblenden</button>
-                    <button id="btn-add-wall">+ Wand hinzufügen</button>
+                    <div class="editor-button-row">
+                        <button id="btn-add-wall">+ Wand hinzufügen</button>
+                        <button id="toggle-walls" class="toggle-grid-btn">Wände ein/ausblenden</button>
+                    </div>
                     <div id="wall-list"></div>
                 </div>
 
                 <div class="editor-block">
                     <label>Löcher (max 6)</label>
-                    <button id="toggle-holes" class="toggle-grid-btn">Löcher ein/ausblenden</button>
-                    <button id="btn-add-hole">+ Loch hinzufügen</button>
+                    <div class="editor-button-row">
+                        <button id="btn-add-hole">+ Loch hinzufügen</button>
+                        <button id="toggle-holes" class="toggle-grid-btn">Löcher ein/ausblenden</button>
+                    </div>
                     <div id="hole-list"></div>
                 </div>
 
                 <div class="editor-row">
+                    <div class="field-small">
+                        <label>Reibung: <span id="friction-value">1.00</span></label>
+                        <input type="range" id="map-friction" min="0" max="5" step="0.01" value="1.00">
+                    </div>
 
-                <div class="field-small">
-                    <label>Reibung: <span id="friction-value">1.00</span></label>
-                    <input type="range" id="map-friction" min="0" max="5" step="0.01" value="1.00">
+                    <div class="field-small">
+                        <label>Drift: <span id="drift-value">0.00</span></label>
+                        <input type="range" id="map-drift" min="0" max="5" step="0.01" value="0.00">
+                    </div>
                 </div>
-
-                <div class="field-small">
-                    <label>Drift: <span id="drift-value">0.00</span></label>
-                    <input type="range" id="map-drift" min="0" max="5" step="0.01" value="0.00">
-                </div>
-
-                </div>
-
 
                 <div class="editor-block">
                     <label>Spieler</label>
-                    <button id="toggle-players" class="toggle-grid-btn">Spieler ein/ausblenden
-                    <button id="btn-add-player">+ Spieler hinzufügen</button>
+                    <div class="editor-button-row">
+                        <button id="btn-add-player">+ Spieler hinzufügen</button>
+                        <button id="toggle-players" class="toggle-grid-btn">Spieler ein/ausblenden</button>
+                    </div>
                     <div id="player-list"></div>
                 </div>
             </div>
 
+            <!-- ITEM EDITOR -->
+<div id="editor-items" class="editor-section">
+    <h2>Items</h2>
+
+    <!-- IDENTITY -->
+    <h3>IDENTITY</h3>
+    <div class="editor-grid">
+        <div class="field">
+            <label for="item-id">ID</label>
+            <input type="text" id="item-id">
+        </div>
+
+        <div class="field">
+            <label for="item-name">Name</label>
+            <input type="text" id="item-name">
+        </div>
+    </div>
+
+    <!-- BEHAVIOR -->
+    <h3>BEHAVIOR</h3>
+    <div class="editor-grid">
+        <div class="field">
+            <label for="item-effect-type">Effect Type</label>
+            <select id="item-effect-type">
+                <option value="impulse">Impulse</option>
+                <option value="heal">Heal</option>
+                <option value="buff">Buff</option>
+                <option value="debuff">Debuff</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="item-trigger">Trigger</label>
+            <select id="item-trigger">
+                <option value="onUse">On Use</option>
+                <option value="onHit">On Hit</option>
+                <option value="onPickup">On Pickup</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- FREQUENCY -->
+    <h3>FREQUENCY</h3>
+
+    <div class="tab-bar" id="freq-tabs">
+        <button data-tab="freq-rounds" class="active">Rundenbasiert</button>
+        <button data-tab="freq-player">Spielerbasiert</button>
+        <button data-tab="freq-dynamic">Dynamisch</button>
+    </div>
+
+    <!-- Rundenbasiert -->
+    <div class="tab-content active" id="freq-rounds">
+        <div class="field">
+            <label>Intervall (Runden)</label>
+            <input type="number" id="freq-rounds-interval" min="1" value="3">
+        </div>
+    </div>
+
+    <!-- Spielerbasiert -->
+    <div class="tab-content" id="freq-player">
+
+        <div class="field">
+            <label>Modus</label>
+            <div class="radio-row">
+                <label><input type="radio" name="player-mode" value="kills" checked> Nach Kills</label>
+                <label><input type="radio" name="player-mode" value="last"> Letzte Spieler</label>
+            </div>
+        </div>
+
+        <div class="editor-grid">
+            <div class="field" id="field-player-kills">
+                <label>Kills‑Intervall</label>
+                <input type="number" id="freq-player-kills" min="1" value="3">
+            </div>
+
+            <div class="field" id="field-player-last" style="display:none;">
+                <label>Letzte‑Spieler‑Schwelle</label>
+                <input type="number" id="freq-player-last" min="1" value="4">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Dynamisch -->
+    <div class="tab-content" id="freq-dynamic">
+        <div class="editor-grid">
+            <div class="field">
+                <label>Health‑Threshold (%)</label>
+                <input type="number" id="freq-dyn-health" min="1" max="100" value="20">
+            </div>
+
+            <div class="field">
+                <label>Boost‑Factor</label>
+                <input type="number" id="freq-dyn-boost" min="1" value="5">
+            </div>
+        </div>
+    </div>
+
+    <!-- PROBABILITY -->
+    <h3>PROBABILITY</h3>
+    <div class="field">
+        <label>Wahrscheinlichkeit (%)</label>
+        <input type="number" id="item-probability" min="0" max="100" value="25">
+    </div>
+
+    <!-- SPAWN -->
+    <h3>SPAWN</h3>
+
+    <div class="tab-bar" id="spawn-tabs">
+        <button data-tab="spawn-points" class="active">Spawnpunkte</button>
+        <button data-tab="spawn-areas">Spawnbereiche</button>
+    </div>
+
+    <!-- Spawnpunkte -->
+    <div class="tab-content active" id="spawn-points">
+        <button id="btn-add-spawnpoint" class="small-btn">+ Spawnpunkt</button>
+        <ul id="spawnpoint-list" class="spawn-list"></ul>
+    </div>
+
+    <!-- Spawnbereiche -->
+    <div class="tab-content" id="spawn-areas">
+        <button id="btn-add-area" class="small-btn">+ Bereich</button>
+        <div id="area-list" class="accordion"></div>
+    </div>
+
+</div>
+
+
             <!-- OTHER EDITORS -->
-            <div id="editor-items" class="editor-section"><h2>Items</h2></div>
             <div id="editor-hazards" class="editor-section"><h2>Hazards</h2></div>
             <div id="editor-modes" class="editor-section"><h2>Modi</h2></div>
             <div id="editor-ai" class="editor-section"><h2>AI Parameter</h2></div>
@@ -129,7 +272,6 @@
 
     <!-- JS MODULES -->
     <script type="module" src="js/main.js"></script>
-
 
 </body>
 </html>
