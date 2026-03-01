@@ -7,6 +7,7 @@ export class P5Renderer implements RenderContext {
 	constructor(p: p5) {
 		this.p5ctx = p
 		this.assets = new Map<string, p5.Image>()
+		this.p5ctx.rectMode(p5.CENTER)
 	}
 	setFillColor(color: string): void {
 		this.p5ctx.fill(color)
@@ -62,7 +63,16 @@ export class P5Renderer implements RenderContext {
 	setStroke(weight: number): void {
 		this.p5ctx.stroke(weight)
 	}
-	rotate(deg: number): void {
-		this.p5ctx.rotate(deg)
+	rotate(x: number): void {
+		this.p5ctx.rotate(x)
+	}
+	translate(x: number, y: number): void {
+		this.p5ctx.translate(x, y)
+	}
+	push(): void {
+		this.p5ctx.push()
+	}
+	pop(): void {
+		this.p5ctx.pop()
 	}
 }

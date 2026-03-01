@@ -22,7 +22,9 @@ export class DefaultUI implements UIStrategy {
 		this.gap = gap || 10;
 		this.amnt = amnt || 5;
 	}
-	render(_deltatime: number): void { }
+	render(_deltatime: number): void {
+
+	}
 	draw(ctx: RenderContext): void {
 		ctx.drawText("Your Turn!", 500, 100, 15)
 

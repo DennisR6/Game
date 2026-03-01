@@ -3,7 +3,7 @@ export interface Settings {
 	players?: Entity[];
 	friction?: number;
 	effects?: Effect[];
-	items?: any[];
+	items?: Item[];
 	background?: Background;
 	screenResolution: ScreenResolution;
 }
@@ -58,6 +58,10 @@ export interface Entity {
 	team: string;
 	playericon: string;
 }
+export interface Item {
+	type: string
+	id: number
+}
 
 const thickness = 2
 export default {
@@ -88,8 +92,8 @@ export default {
 		{ x: 300, y: 305, color: "green", playericon: "", team: "0" },
 		{ x: 600, y: 300, color: "red", playericon: "", team: "1" },
 	],
-	friction: 1.2,
-	items: [],
+	friction: 0.9,
+	items: [{ type: "", id: 0 }],
 	effects: [],
 	background: { type: "image", url: "/eis.png" },
 	// background: { type: "color", color: "blue" },

@@ -1,4 +1,4 @@
-import type { Settings } from "../settings/settings";
+import type { Item, Settings } from "../settings/settings";
 import { type Structure, StructureCircle, StructureLine, StructureRectangle } from "../structures/structures";
 import type { Drawer, Renderer, RenderContext } from "./RenderContext";
 import { Player, type IEntity } from "../entity/entity"
@@ -12,6 +12,7 @@ export class Handler implements Renderer, Drawer {
 	physics: PhysicsStrategy
 	background: IBackground
 	friction: number
+	item: Item[] = []
 	ui: UIStrategy
 	constructor(settings?: Settings) {
 		this.entitys = [];
@@ -79,7 +80,7 @@ export class Handler implements Renderer, Drawer {
 		(new Array().concat(this.entitys, this.structures)).forEach((item: IEntity) => item.setFriction(settings.friction || 0.95))
 
 		// TODO: importiere die item-Settings 
-		settings.items
+		settings.items?.forEach(item => this.item.push(item))
 
 		// TODO: importiere die Effekte
 		settings.effects
@@ -95,14 +96,22 @@ export class Handler implements Renderer, Drawer {
 	// NOTE: stable
 	draw(ctx: RenderContext) {
 		ctx.clear("white")
+		ctx.push()
 		this.background.draw(ctx)
+		ctx.pop()
 		for (const structure of this.structures) {
+			ctx.push()
 			structure.draw(ctx)
+			ctx.pop()
 		}
 		for (const entity of this.entitys) {
+			ctx.push()
 			entity.draw(ctx)
+			ctx.pop()
 		}
+		ctx.push()
 		this.ui.draw(ctx)
+		ctx.pop()
 	}
 	// NOTE: stable
 	render(deltatime: number) {
