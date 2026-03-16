@@ -11,19 +11,35 @@ import { mapData } from "./state.js";
 
 export function initItemsEditor() {
 
-    // Falls items fehlt → anlegen
     if (!mapData.items) mapData.items = [];
 
     setupTabs();
     setupAccordion();
     setupAddItemButton();
-    renderItemSidebar();
     setupPlayerFrequencyMode();
     setupSpawnButtons();
+    setupAutoSave();
+    setupSaveButton();
 
-
+    renderItemsOverview();   // Übersicht zuerst anzeigen
 
     console.log("Items-Editor initialisiert");
+}
+
+
+
+// ---------------------------------------------------------
+//  ÜBERSICHT / EDITOR UMSCHALTEN
+// ---------------------------------------------------------
+
+function showOverview() {
+    document.getElementById("items-overview").classList.add("active");
+    document.getElementById("item-editor-form").classList.remove("active");
+}
+
+function showEditor() {
+    document.getElementById("items-overview").classList.remove("active");
+    document.getElementById("item-editor-form").classList.add("active");
 }
 
 
@@ -38,11 +54,9 @@ function setupTabs() {
             const group = btn.parentElement;
             const tab = btn.dataset.tab;
 
-            // Buttons umschalten
             group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
 
-            // Tab-Content umschalten
             const container = group.parentElement;
             container.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
 
@@ -76,7 +90,6 @@ function renderItemSidebar() {
     const list = document.getElementById("sidebar-item-list");
     list.innerHTML = "";
 
-    // Alphabetisch sortieren
     const sorted = [...mapData.items].sort((a, b) =>
         (a.name || "").localeCompare(b.name || "")
     );
@@ -88,7 +101,7 @@ function renderItemSidebar() {
 
         li.addEventListener("click", () => {
             selectSidebarItem(li);
-            loadItemIntoEditor(item);
+            openItemEditor(item);
         });
 
         list.appendChild(li);
@@ -145,11 +158,8 @@ function loadItemIntoEditor(item) {
         document.getElementById("field-player-last").style.display = "block";
     }
 
-
-    // Spawnpunkte
+    // Spawn
     renderSpawnPoints(item.spawn.points);
-
-    // Spawnbereiche
     renderSpawnAreas(item.spawn.areas);
 }
 
@@ -160,14 +170,13 @@ function loadItemIntoEditor(item) {
 // ---------------------------------------------------------
 
 function setupAddItemButton() {
-    document.getElementById("btn-add-item").addEventListener("click", () => {
+    document.getElementById("btn-create-item").addEventListener("click", () => {
 
         const newItem = {
             id: "item_" + Math.random().toString(36).substr(2, 6),
             name: "",
             effectType: "impulse",
             trigger: "onUse",
-
             frequency: {
                 mode: "rundenbasiert",
                 intervalRounds: 3,
@@ -176,9 +185,7 @@ function setupAddItemButton() {
                 healthThreshold: 20,
                 boostFactor: 5
             },
-
             probability: 25,
-
             spawn: {
                 type: "points",
                 points: [],
@@ -187,17 +194,65 @@ function setupAddItemButton() {
         };
 
         mapData.items.push(newItem);
-renderItemSidebar();
 
-// Sidebar-Element aktivieren
-const li = document.querySelector(`#sidebar-item-list li[data-id="${newItem.id}"]`);
-if (li) {
-    selectSidebarItem(li);
-    loadItemIntoEditor(newItem);
-}
+        renderItemSidebar();
+        renderItemsOverview();
 
+        openItemEditor(newItem);
     });
 }
+
+function setupSaveButton() {
+    const btn = document.getElementById("btn-save-item");
+    btn.addEventListener("click", () => {
+        saveCurrentItem();      // Speichert ins aktive Item
+        renderItemSidebar();    // Sidebar aktualisieren
+        renderItemsOverview();  // Tabelle aktualisieren
+        console.log("Item gespeichert:", getCurrentItem());
+    });
+}
+
+
+// ---------------------------------------------------------
+//  ITEM ÜBERSICHT
+// ---------------------------------------------------------
+
+function renderItemsOverview() {
+    const tbody = document.getElementById("item-table-body");
+    tbody.innerHTML = "";
+
+    mapData.items.forEach(item => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${item.name || "(Unbenannt)"}</td>
+            <td>${item.effectType}</td>
+            <td>${item.trigger}</td>
+            <td>${item.spawn.type}</td>
+            <td>${item.probability}%</td>
+        `;
+
+        tr.addEventListener("click", () => {
+            openItemEditor(item);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+function openItemEditor(item) {
+    showEditor();
+    loadItemIntoEditor(item);
+
+    const li = document.querySelector(`#sidebar-item-list li[data-id="${item.id}"]`);
+    if (li) selectSidebarItem(li);
+}
+
+
+
+// ---------------------------------------------------------
+//  GET CURRENT ITEM
+// ---------------------------------------------------------
 
 function getCurrentItem() {
     const activeLi = document.querySelector("#sidebar-item-list li.active");
@@ -207,8 +262,9 @@ function getCurrentItem() {
 }
 
 
+
 // ---------------------------------------------------------
-//  SPAWN – PUNKTE RENDERN
+//  SPAWN – PUNKTE
 // ---------------------------------------------------------
 
 function renderSpawnPoints(points) {
@@ -232,20 +288,10 @@ function renderSpawnPoints(points) {
             </div>
         `;
 
-        // Events
-        const inputX = li.querySelector(".sp-x");
-        const inputY = li.querySelector(".sp-y");
-        const btnDel = li.querySelector(".btn-delete-point");
+        li.querySelector(".sp-x").addEventListener("input", e => p.x = Number(e.target.value));
+        li.querySelector(".sp-y").addEventListener("input", e => p.y = Number(e.target.value));
 
-        inputX.addEventListener("input", () => {
-            p.x = Number(inputX.value);
-        });
-
-        inputY.addEventListener("input", () => {
-            p.y = Number(inputY.value);
-        });
-
-        btnDel.addEventListener("click", () => {
+        li.querySelector(".btn-delete-point").addEventListener("click", () => {
             points.splice(index, 1);
             renderSpawnPoints(points);
         });
@@ -256,9 +302,8 @@ function renderSpawnPoints(points) {
 
 
 
-
 // ---------------------------------------------------------
-//  SPAWN – BEREICHE RENDERN
+//  SPAWN – BEREICHE
 // ---------------------------------------------------------
 
 function renderSpawnAreas(areas) {
@@ -305,51 +350,18 @@ function renderSpawnAreas(areas) {
             </div>
         `;
 
-        const shapeSel = block.querySelector(".area-shape");
-        const inputX = block.querySelector(".area-x");
-        const inputY = block.querySelector(".area-y");
-        const inputR = block.querySelector(".area-radius");
-        const inputW = block.querySelector(".area-width");
-        const inputH = block.querySelector(".area-height");
-        const fieldR = block.querySelector(".field-radius");
-        const fieldW = block.querySelector(".field-width");
-        const fieldH = block.querySelector(".field-height");
-        const btnDel = block.querySelector(".btn-delete-area");
-
-        shapeSel.addEventListener("change", () => {
-            area.shape = shapeSel.value;
-            if (area.shape === "circle") {
-                fieldR.style.display = "";
-                fieldW.style.display = "none";
-                fieldH.style.display = "none";
-            } else {
-                fieldR.style.display = "none";
-                fieldW.style.display = "";
-                fieldH.style.display = "";
-            }
+        block.querySelector(".area-shape").addEventListener("change", e => {
+            area.shape = e.target.value;
+            renderSpawnAreas(areas);
         });
 
-        inputX.addEventListener("input", () => {
-            area.x = Number(inputX.value);
-        });
+        block.querySelector(".area-x").addEventListener("input", e => area.x = Number(e.target.value));
+        block.querySelector(".area-y").addEventListener("input", e => area.y = Number(e.target.value));
+        block.querySelector(".area-radius").addEventListener("input", e => area.radius = Number(e.target.value));
+        block.querySelector(".area-width").addEventListener("input", e => area.width = Number(e.target.value));
+        block.querySelector(".area-height").addEventListener("input", e => area.height = Number(e.target.value));
 
-        inputY.addEventListener("input", () => {
-            area.y = Number(inputY.value);
-        });
-
-        inputR.addEventListener("input", () => {
-            area.radius = Number(inputR.value);
-        });
-
-        inputW.addEventListener("input", () => {
-            area.width = Number(inputW.value);
-        });
-
-        inputH.addEventListener("input", () => {
-            area.height = Number(inputH.value);
-        });
-
-        btnDel.addEventListener("click", () => {
+        block.querySelector(".btn-delete-area").addEventListener("click", () => {
             areas.splice(index, 1);
             renderSpawnAreas(areas);
         });
@@ -358,6 +370,11 @@ function renderSpawnAreas(areas) {
     });
 }
 
+
+
+// ---------------------------------------------------------
+//  FREQUENCY MODE
+// ---------------------------------------------------------
 
 function setupPlayerFrequencyMode() {
     const killsField = document.getElementById("field-player-kills");
@@ -375,6 +392,12 @@ function setupPlayerFrequencyMode() {
         });
     });
 }
+
+
+
+// ---------------------------------------------------------
+//  SPAWN BUTTONS
+// ---------------------------------------------------------
 
 function setupSpawnButtons() {
     const btnAddPoint = document.getElementById("btn-add-spawnpoint");
@@ -407,3 +430,57 @@ function setupSpawnButtons() {
     });
 }
 
+
+
+// ---------------------------------------------------------
+//  AUTOSAVE
+// ---------------------------------------------------------
+
+function setupAutoSave() {
+    const inputs = document.querySelectorAll("#editor-items input, #editor-items select");
+
+    inputs.forEach(input => {
+        input.addEventListener("input", saveCurrentItem);
+    });
+}
+
+function saveCurrentItem() {
+    const item = getCurrentItem();
+    if (!item) return;
+
+    item.id = document.getElementById("item-id").value;
+    item.name = document.getElementById("item-name").value;
+
+    item.effectType = document.getElementById("item-effect-type").value;
+    item.trigger = document.getElementById("item-trigger").value;
+
+    item.frequency.intervalRounds = Number(document.getElementById("freq-rounds-interval").value);
+    item.frequency.killsInterval = Number(document.getElementById("freq-player-kills").value);
+    item.frequency.lastPlayersThreshold = Number(document.getElementById("freq-player-last").value);
+    item.frequency.healthThreshold = Number(document.getElementById("freq-dyn-health").value);
+    item.frequency.boostFactor = Number(document.getElementById("freq-dyn-boost").value);
+
+    const mode = document.querySelector("input[name='player-mode']:checked").value;
+    if (mode === "kills") {
+        item.frequency.lastPlayersThreshold = 0;
+    } else {
+        item.frequency.killsInterval = 0;
+    }
+
+    item.probability = Number(document.getElementById("item-probability").value);
+
+    renderItemSidebar();
+}
+
+document.addEventListener("items-updated", () => {
+    renderItemSidebar();
+});
+
+document.addEventListener("items-overview-update", () => {
+    renderItemsOverview();
+});
+
+document.addEventListener("open-item-editor", (e) => {
+    const item = e.detail;
+    openItemEditor(item);
+});

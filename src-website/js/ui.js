@@ -11,17 +11,88 @@ import {
 // SIDEBAR NAVIGATION
 // ---------------------------------------------------------
 export function initSidebar() {
-    document.querySelectorAll(".sidebar li").forEach(li => {
+
+    // Nur echte Navigationseinträge (mit data-target)
+    document.querySelectorAll(".sidebar li[data-target]").forEach(li => {
+
         li.addEventListener("click", () => {
-            document.querySelectorAll(".sidebar li").forEach(x => x.classList.remove("active"));
+
+            // Navigation markieren
+            document.querySelectorAll(".sidebar li[data-target]").forEach(x =>
+                x.classList.remove("active")
+            );
             li.classList.add("active");
 
             const target = li.getAttribute("data-target");
-            document.querySelectorAll(".editor-section").forEach(sec => sec.classList.remove("active"));
-            document.getElementById(target).classList.add("active");
+            if (!target) return;
+
+            // Alle Editor-Sektionen ausblenden
+            document.querySelectorAll(".editor-section").forEach(sec =>
+                sec.classList.remove("active")
+            );
+
+            // Spezialfall: Items → Übersicht anzeigen
+            if (target === "editor-items") {
+
+                // Items-Container aktivieren
+                document.getElementById("editor-items").classList.add("active");
+
+                // Übersicht aktivieren
+                document.getElementById("items-overview").classList.add("active");
+                document.getElementById("item-editor-form").classList.remove("active");
+
+                return;
+            }
+
+            // Standard: Ziel anzeigen
+            const section = document.getElementById(target);
+            if (section) section.classList.add("active");
         });
     });
+
+
+    // -----------------------------------------------------
+    // NEUES ITEM AUS DER NAVIGATION
+    // -----------------------------------------------------
+    document.getElementById("btn-add-item").addEventListener("click", () => {
+
+        const newItem = {
+            id: "item_" + Math.random().toString(36).substr(2, 6),
+            name: "",
+            effectType: "impulse",
+            trigger: "onUse",
+            frequency: {
+                mode: "rundenbasiert",
+                intervalRounds: 3,
+                killsInterval: 3,
+                lastPlayersThreshold: 4,
+                healthThreshold: 20,
+                boostFactor: 5
+            },
+            probability: 25,
+            spawn: {
+                type: "points",
+                points: [],
+                areas: []
+            }
+        };
+
+        mapData.items.push(newItem);
+
+        // Sidebar aktualisieren
+        const event = new CustomEvent("items-updated");
+        document.dispatchEvent(event);
+
+        // Übersicht aktualisieren
+        const overviewEvent = new CustomEvent("items-overview-update");
+        document.dispatchEvent(overviewEvent);
+
+        // Editor öffnen
+        const openEvent = new CustomEvent("open-item-editor", { detail: newItem });
+        document.dispatchEvent(openEvent);
+    });
 }
+
 
 
 // ---------------------------------------------------------
@@ -32,18 +103,13 @@ export function initNewMapButton() {
 
         resetMapData();
 
-        // UI Felder zurücksetzen
         restoreMapFields();
 
-        // Bild-Input leeren
         mapData.background = null;
         document.getElementById("map-image").value = "";
         document.getElementById("preview-canvas").style.backgroundImage = "";
-
-        // Preview leeren
         document.getElementById("preview-canvas").innerHTML = "";
 
-        // Listen leeren
         document.getElementById("wall-list").innerHTML = "";
         document.getElementById("hole-list").innerHTML = "";
         document.getElementById("player-list").innerHTML = "";
@@ -71,8 +137,9 @@ export function initDownload() {
 }
 
 
+
 // ---------------------------------------------------------
-// JSON IMPORT + UI WIEDERHERSTELLUNG
+// JSON IMPORT
 // ---------------------------------------------------------
 export function initImport() {
     const fileInput = document.getElementById("file-import");
@@ -92,10 +159,8 @@ export function initImport() {
 
         restoreMapFields();
 
-        // Bild-Input leeren
         document.getElementById("map-image").value = "";
 
-        // Preview wiederherstellen
         if (mapData.background?.url) {
             document.getElementById("preview-canvas").style.backgroundImage =
                 `url(${mapData.background.url})`;
@@ -114,4 +179,17 @@ export function initImport() {
     });
 }
 
+// Sidebar aktualisieren
+document.addEventListener("items-updated", () => {
+    renderItemSidebar();
+});
 
+// Tabelle aktualisieren
+document.addEventListener("items-overview-update", () => {
+    renderItemsOverview();
+});
+
+// Editor öffnen
+document.addEventListener("open-item-editor", (e) => {
+    openItemEditor(e.detail);
+});

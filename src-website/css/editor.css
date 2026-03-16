@@ -363,5 +363,12 @@ input[type="range"]::-moz-range-thumb {
     margin-bottom: 10px;
 }
 
+#items-overview { display: block; }
+#item-editor-form { display: none; }
+
+#items-overview.active { display: block; }
+#item-editor-form.active { display: block; }
+
+
 
 

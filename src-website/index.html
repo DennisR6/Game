@@ -126,9 +126,29 @@
                 </div>
             </div>
 
-            <!-- ITEM EDITOR -->
+<!-- ITEM OVERVIEW (Tabelle) -->
+<div id="items-overview" class="editor-section active">
+    <h2>Alle Items</h2>
+    <button id="btn-save-item" class="small-btn">Speichern</button>
+    <button id="btn-create-item" class="small-btn">+ Neues Item</button>
+
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Effect</th>
+                <th>Trigger</th>
+                <th>Spawn-Typ</th>
+                <th>Wahrscheinlichkeit</th>
+            </tr>
+        </thead>
+        <tbody id="item-table-body"></tbody>
+    </table>
+</div>
+
+<!-- ITEM EDITOR (Formular) -->
 <div id="editor-items" class="editor-section">
-    <h2>Items</h2>
+    <h2>Item bearbeiten</h2>
 
     <!-- IDENTITY -->
     <h3>IDENTITY</h3>
@@ -176,7 +196,6 @@
         <button data-tab="freq-dynamic">Dynamisch</button>
     </div>
 
-    <!-- Rundenbasiert -->
     <div class="tab-content active" id="freq-rounds">
         <div class="field">
             <label>Intervall (Runden)</label>
@@ -184,9 +203,7 @@
         </div>
     </div>
 
-    <!-- Spielerbasiert -->
     <div class="tab-content" id="freq-player">
-
         <div class="field">
             <label>Modus</label>
             <div class="radio-row">
@@ -206,10 +223,8 @@
                 <input type="number" id="freq-player-last" min="1" value="4">
             </div>
         </div>
-
     </div>
 
-    <!-- Dynamisch -->
     <div class="tab-content" id="freq-dynamic">
         <div class="editor-grid">
             <div class="field">
@@ -239,18 +254,15 @@
         <button data-tab="spawn-areas">Spawnbereiche</button>
     </div>
 
-    <!-- Spawnpunkte -->
     <div class="tab-content active" id="spawn-points">
         <button id="btn-add-spawnpoint" class="small-btn">+ Spawnpunkt</button>
         <ul id="spawnpoint-list" class="spawn-list"></ul>
     </div>
 
-    <!-- Spawnbereiche -->
     <div class="tab-content" id="spawn-areas">
         <button id="btn-add-area" class="small-btn">+ Bereich</button>
         <div id="area-list" class="accordion"></div>
     </div>
-
 </div>
 
 
