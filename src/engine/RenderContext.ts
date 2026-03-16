@@ -13,6 +13,7 @@ export interface RenderContext {
 	clear(color?: string): void;
 	push(): void;
 	pop(): void;
+	mouseWheel(callback: (e: MouseEvent) => void): void;
 }
 
 export interface Renderer {
