@@ -1,9 +1,9 @@
 import { mapData, resetMapData } from "./state.js";
-import { 
-    renderWalls, 
-    renderHoles, 
-    renderPlayers, 
-    restoreMapFields 
+import {
+	renderWalls,
+	renderHoles,
+	renderPlayers,
+	restoreMapFields
 } from "./editor-map.js";
 
 
@@ -12,85 +12,85 @@ import {
 // ---------------------------------------------------------
 export function initSidebar() {
 
-    // Nur echte Navigationseinträge (mit data-target)
-    document.querySelectorAll(".sidebar li[data-target]").forEach(li => {
+	// Nur echte Navigationseinträge (mit data-target)
+	document.querySelectorAll(".sidebar li[data-target]").forEach(li => {
 
-        li.addEventListener("click", () => {
+		li.addEventListener("click", () => {
 
-            // Navigation markieren
-            document.querySelectorAll(".sidebar li[data-target]").forEach(x =>
-                x.classList.remove("active")
-            );
-            li.classList.add("active");
+			// Navigation markieren
+			document.querySelectorAll(".sidebar li[data-target]").forEach(x =>
+				x.classList.remove("active")
+			);
+			li.classList.add("active");
 
-            const target = li.getAttribute("data-target");
-            if (!target) return;
+			const target = li.getAttribute("data-target");
+			if (!target) return;
 
-            // Alle Editor-Sektionen ausblenden
-            document.querySelectorAll(".editor-section").forEach(sec =>
-                sec.classList.remove("active")
-            );
+			// Alle Editor-Sektionen ausblenden
+			document.querySelectorAll(".editor-section").forEach(sec =>
+				sec.classList.remove("active")
+			);
 
-            // Spezialfall: Items → Übersicht anzeigen
-            if (target === "editor-items") {
+			// Spezialfall: Items → Übersicht anzeigen
+			if (target === "editor-items") {
 
-                // Items-Container aktivieren
-                document.getElementById("editor-items").classList.add("active");
+				// Items-Container aktivieren
+				document.getElementById("editor-items").classList.add("active");
 
-                // Übersicht aktivieren
-                document.getElementById("items-overview").classList.add("active");
-                document.getElementById("item-editor-form").classList.remove("active");
+				// Übersicht aktivieren
+				document.getElementById("items-overview").classList.add("active");
+				document.getElementById("item-editor-form").classList.remove("active");
 
-                return;
-            }
+				return;
+			}
 
-            // Standard: Ziel anzeigen
-            const section = document.getElementById(target);
-            if (section) section.classList.add("active");
-        });
-    });
+			// Standard: Ziel anzeigen
+			const section = document.getElementById(target);
+			if (section) section.classList.add("active");
+		});
+	});
 
 
-    // -----------------------------------------------------
-    // NEUES ITEM AUS DER NAVIGATION
-    // -----------------------------------------------------
-    document.getElementById("btn-add-item").addEventListener("click", () => {
+	// -----------------------------------------------------
+	// NEUES ITEM AUS DER NAVIGATION
+	// -----------------------------------------------------
+	document.getElementById("btn-add-item").addEventListener("click", () => {
 
-        const newItem = {
-            id: "item_" + Math.random().toString(36).substr(2, 6),
-            name: "",
-            effectType: "impulse",
-            trigger: "onUse",
-            frequency: {
-                mode: "rundenbasiert",
-                intervalRounds: 3,
-                killsInterval: 3,
-                lastPlayersThreshold: 4,
-                healthThreshold: 20,
-                boostFactor: 5
-            },
-            probability: 25,
-            spawn: {
-                type: "points",
-                points: [],
-                areas: []
-            }
-        };
+		const newItem = {
+			id: "item_" + Math.random().toString(36).substr(2, 6),
+			name: "",
+			effectType: "impulse",
+			trigger: "onUse",
+			frequency: {
+				mode: "rundenbasiert",
+				intervalRounds: 3,
+				killsInterval: 3,
+				lastPlayersThreshold: 4,
+				healthThreshold: 20,
+				boostFactor: 5
+			},
+			probability: 25,
+			spawn: {
+				type: "points",
+				points: [],
+				areas: []
+			}
+		};
 
-        mapData.items.push(newItem);
+		mapData.items.push(newItem);
 
-        // Sidebar aktualisieren
-        const event = new CustomEvent("items-updated");
-        document.dispatchEvent(event);
+		// // Sidebar aktualisieren
+		// const event = new CustomEvent("items-updated");
+		// document.dispatchEvent(event);
 
-        // Übersicht aktualisieren
-        const overviewEvent = new CustomEvent("items-overview-update");
-        document.dispatchEvent(overviewEvent);
+		// Übersicht aktualisieren
+		const overviewEvent = new CustomEvent("items-overview-update");
+		document.dispatchEvent(overviewEvent);
 
-        // Editor öffnen
-        const openEvent = new CustomEvent("open-item-editor", { detail: newItem });
-        document.dispatchEvent(openEvent);
-    });
+		// Editor öffnen
+		const openEvent = new CustomEvent("open-item-editor", { detail: newItem });
+		document.dispatchEvent(openEvent);
+	});
 }
 
 
@@ -99,23 +99,23 @@ export function initSidebar() {
 // NEW MAP
 // ---------------------------------------------------------
 export function initNewMapButton() {
-    document.getElementById("btn-new-map").addEventListener("click", () => {
+	document.getElementById("btn-new-map").addEventListener("click", () => {
 
-        resetMapData();
+		resetMapData();
 
-        restoreMapFields();
+		restoreMapFields();
 
-        mapData.background = null;
-        document.getElementById("map-image").value = "";
-        document.getElementById("preview-canvas").style.backgroundImage = "";
-        document.getElementById("preview-canvas").innerHTML = "";
+		mapData.background = null;
+		document.getElementById("map-image").value = "";
+		document.getElementById("preview-canvas").style.backgroundImage = "";
+		document.getElementById("preview-canvas").innerHTML = "";
 
-        document.getElementById("wall-list").innerHTML = "";
-        document.getElementById("hole-list").innerHTML = "";
-        document.getElementById("player-list").innerHTML = "";
+		document.getElementById("wall-list").innerHTML = "";
+		document.getElementById("hole-list").innerHTML = "";
+		document.getElementById("player-list").innerHTML = "";
 
-        console.log("Neue Map erstellt:", mapData);
-    });
+		console.log("Neue Map erstellt:", mapData);
+	});
 }
 
 
@@ -124,16 +124,16 @@ export function initNewMapButton() {
 // JSON DOWNLOAD
 // ---------------------------------------------------------
 export function initDownload() {
-    document.getElementById("btn-download").addEventListener("click", () => {
-        const json = JSON.stringify(mapData, null, 2);
-        const blob = new Blob([json], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
+	document.getElementById("btn-download").addEventListener("click", () => {
+		const json = JSON.stringify(mapData, null, 2);
+		const blob = new Blob([json], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${mapData.name || "map"}.json`;
-        a.click();
-    });
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `${mapData.name || "map"}.json`;
+		a.click();
+	});
 }
 
 
@@ -142,54 +142,54 @@ export function initDownload() {
 // JSON IMPORT
 // ---------------------------------------------------------
 export function initImport() {
-    const fileInput = document.getElementById("file-import");
+	const fileInput = document.getElementById("file-import");
 
-    document.getElementById("btn-import").addEventListener("click", () => {
-        fileInput.click();
-    });
+	document.getElementById("btn-import").addEventListener("click", () => {
+		fileInput.click();
+	});
 
-    fileInput.addEventListener("change", async () => {
-        const file = fileInput.files[0];
-        if (!file) return;
+	fileInput.addEventListener("change", async () => {
+		const file = fileInput.files[0];
+		if (!file) return;
 
-        const text = await file.text();
-        const json = JSON.parse(text);
+		const text = await file.text();
+		const json = JSON.parse(text);
 
-        Object.assign(mapData, json);
+		Object.assign(mapData, json);
 
-        restoreMapFields();
+		restoreMapFields();
 
-        document.getElementById("map-image").value = "";
+		document.getElementById("map-image").value = "";
 
-        if (mapData.background?.url) {
-            document.getElementById("preview-canvas").style.backgroundImage =
-                `url(${mapData.background.url})`;
-            document.getElementById("preview-canvas").style.backgroundSize = "contain";
-            document.getElementById("preview-canvas").style.backgroundRepeat = "no-repeat";
-            document.getElementById("preview-canvas").style.backgroundPosition = "center";
-        } else {
-            document.getElementById("preview-canvas").style.backgroundImage = "";
-        }
+		if (mapData.background?.url) {
+			document.getElementById("preview-canvas").style.backgroundImage =
+				`url(${mapData.background.url})`;
+			document.getElementById("preview-canvas").style.backgroundSize = "contain";
+			document.getElementById("preview-canvas").style.backgroundRepeat = "no-repeat";
+			document.getElementById("preview-canvas").style.backgroundPosition = "center";
+		} else {
+			document.getElementById("preview-canvas").style.backgroundImage = "";
+		}
 
-        renderWalls();
-        renderHoles();
-        renderPlayers();
+		renderWalls();
+		renderHoles();
+		renderPlayers();
 
-        console.log("Map erfolgreich geladen:", mapData);
-    });
+		console.log("Map erfolgreich geladen:", mapData);
+	});
 }
 
 // Sidebar aktualisieren
 document.addEventListener("items-updated", () => {
-    renderItemSidebar();
+	renderItemSidebar();
 });
 
 // Tabelle aktualisieren
 document.addEventListener("items-overview-update", () => {
-    renderItemsOverview();
+	renderItemsOverview();
 });
 
 // Editor öffnen
 document.addEventListener("open-item-editor", (e) => {
-    openItemEditor(e.detail);
+	openItemEditor(e.detail);
 });

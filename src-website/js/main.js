@@ -7,18 +7,18 @@ import { initAIEditor } from "./editor-ai.js";
 import { initPreview } from "./preview.js";
 
 window.addEventListener("DOMContentLoaded", () => {
-    initSidebar();
-    initNewMapButton();
-    initDownload();
-    initImport();
+	initSidebar();
+	initNewMapButton();
+	initDownload();
+	initImport();
 
-    initMapEditor();
-    initItemsEditor();
-    initHazardsEditor();
-    initModesEditor();
-    initAIEditor();
+	initMapEditor();
+	initItemsEditor();
+	initHazardsEditor();
+	initModesEditor();
+	initAIEditor();
 
-    initPreview();
+	initPreview();
 
-    console.log("Slipstrike Editor vollständig initialisiert");
+	console.log("Slipstrike Editor vollständig initialisiert");
 });
